@@ -24,7 +24,7 @@ const FUENTES = [
   {
     loteria: 'Lotería Nacional',
     juego: 'Gana Más',
-    url: ${CONFIG.fuenteBaseUrl}/loteria-nacional/gana-mas/,
+    url: CONFIG.fuenteBaseUrl + '/loteria-nacional/gana-mas/',
     selectores: {
       contenedorUltimoResultado: '.game-block, .game-scores, .resultado-reciente, .card-resultado, body',
       numeros: '.score, .bola, .numero-ganador, .ball',
@@ -34,7 +34,7 @@ const FUENTES = [
   {
     loteria: 'Leidsa',
     juego: 'Súper Kino TV',
-    url: ${CONFIG.fuenteBaseUrl}/leidsa/super-kino-tv/,
+    url: CONFIG.fuenteBaseUrl + '/leidsa/super-kino-tv/',
     selectores: {
       contenedorUltimoResultado: '.game-block, .game-scores, .resultado-reciente, .card-resultado, body',
       numeros: '.score, .bola, .numero-ganador, .ball',
@@ -107,7 +107,7 @@ async function extraerUnaFuenteConAxios(fuente) {
   });
 
   if (numeros.length === 0) {
-    console.warn([scraper] ${fuente.loteria} — ${fuente.juego}: no se encontraron números.);
+    console.warn('[scraper] ' + fuente.loteria + ' — ' + fuente.juego + ': no se encontraron números.');
     return null;
   }
 
@@ -130,16 +130,16 @@ async function ejecutarScrapingYGuardar() {
       if (sorteo) {
         const guardado = await guardarSorteo(sorteo);
         resultados.guardados.push(guardado);
-        console.log([scraper] ¡ÉXITO! Guardado: ${sorteo.loteria} — ${sorteo.juego} (${sorteo.fecha}) -> [${sorteo.numeros.join(', ')}]);
+        console.log('[scraper] ¡ÉXITO! Guardado: ' + sorteo.loteria + ' — ' + sorteo.juego + ' (' + sorteo.fecha + ') -> [' + sorteo.numeros.join(', ') + ']');
       }
     } catch (err) {
-      resultados.errores.push({ fuente: ${fuente.loteria} — ${fuente.juego}, error: err.message });
-      console.error([scraper] Error en ${fuente.loteria} — ${fuente.juego}:, err.message);
+      resultados.errores.push({ fuente: fuente.loteria + ' — ' + fuente.juego, error: err.message });
+      console.error('[scraper] Error en ' + fuente.loteria + ' — ' + fuente.juego + ':', err.message);
     }
     await new Promise((r) => setTimeout(r, 1000));
   }
 
-  console.log([robot] Proceso finalizado. Guardados: ${resultados.guardados.length}, Errores: ${resultados.errores.length});
+  console.log('[robot] Proceso finalizado. Guardados: ' + resultados.guardados.length + ', Errores: ' + resultados.errores.length);
   return resultados;
 }
 
