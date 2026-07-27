@@ -1,10 +1,9 @@
-name: Robot Recolector LotoAnalytics
+name: Robot recolector LotoAnalytics
 
 on:
   schedule:
-    # Se ejecuta automáticamente en los bloques de mayor salida de sorteos (hora UTC)
     - cron: '30 16,17,18,19,23,0,1,2 * * *'
-  workflow_dispatch: # Permite encenderlo manualmente con un botón cuando quieras
+  workflow_dispatch:
 
 jobs:
   run-bot:
@@ -24,11 +23,7 @@ jobs:
           npm install axios cheerio jsdom express dotenv node-cron @supabase/supabase-js
 
       - name: Ejecutar backend-todo-en-uno
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node "backend-todo-en-uno (1).js"
-
-      - name: Guardar y publicar cambios en la web
-        run: |
-          git config --global user.name "Robot LotoAnalytics"
-          git config --global user.email "bot@lotoanalytics.com"
-          git add .
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Resultados de lotería actualizados automáticamente" && git push)
