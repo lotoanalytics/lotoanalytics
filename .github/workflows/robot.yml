@@ -1,0 +1,34 @@
+name: Robot Recolector LotoAnalytics
+
+on:
+  schedule:
+    # Se ejecuta automáticamente en los bloques de mayor salida de sorteos (hora UTC)
+    - cron: '30 16,17,18,19,23,0,1,2 * * *'
+  workflow_dispatch: # Permite encenderlo manualmente con un botón cuando quieras
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar archivos
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar librerías necesarias
+        run: |
+          npm init -y
+          npm install axios cheerio jsdom express
+
+      - name: Ejecutar backend-todo-en-uno
+        run: node "backend-todo-en-uno (1).js"
+
+      - name: Guardar y publicar cambios en la web
+        run: |
+          git config --global user.name "Robot LotoAnalytics"
+          git config --global user.email "bot@lotoanalytics.com"
+          git add .
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Resultados de lotería actualizados automáticamente" && git push)
