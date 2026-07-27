@@ -1,9 +1,3 @@
-[5:45 p.m., 27/7/2026] D'oleo: /**
- * ============================================================
- * BACKEND TODO-EN-UNO — LotoAnalytics (loterías dominicanas)
- * ============================================================
- */
-
 require('dotenv').config();
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -71,14 +65,21 @@ function normalizarFecha(textoFecha) {
 
   const conBarras = limpio.match(/(\d{1,2})[/-](\d{1,2})[/-](\d{4})/);
   if (conBarras) {
-    const [, d, m, y] = conBarras;
-    return ${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')};
+    const d = conBarras[1].padStart(2, '0');
+    const m = conBarras[2].padStart(2, '0');
+    const y = conBarras[3];
+    return y + '-' + m + '-' + d;
   }
   const conMesTexto = limpio.match(/(\d{1,2})\s+([a-záéíóú]+)\.?\s+(\d{4})/i);
   if (conMesTexto) {
-    const [, d, mesTxt, y] = conMesTexto;
+    const d = conMesTexto[1].padStart(2, '0');
+    const mesTxt = conMesTexto[2];
+    const y = conMesTexto[3];
     const mes = MESES_ABR[mesTxt.slice(0, 3)];
-    if (mes !== undefined) return ${y}-${String(mes + 1).padStart(2, '0')}-${d.padStart(2, '0')};
+    if (mes !== undefined) {
+      const m = String(mes + 1).padStart(2, '0');
+      return y + '-' + m + '-' + d;
+    }
   }
   return new Date().toISOString().slice(0, 10);
 }
@@ -94,11 +95,11 @@ async function extraerUnaFuenteConAxios(fuente) {
   let numeros = [];
   let textoFecha = '';
 
-  $(fuente.selectores.contenedorUltimoResultado).each((_, cont) => {
+  $(fuente.selectores.contenedorUltimoResultado).each(function(_, cont) {
     if (numeros.length > 0) return;
     const nums = $(cont).find(fuente.selectores.numeros)
-      .map((_, el) => parseInt($(el).text().trim(), 10)).get()
-      .filter((n) => !Number.isNaN(n));
+      .map(function(_, el) { return parseInt($(el).text().trim(), 10); }).get()
+      .filter(function(n) { return !Number.isNaN(n); });
 
     if (nums.length > 0) {
       numeros = nums;
@@ -115,7 +116,7 @@ async function extraerUnaFuenteConAxios(fuente) {
     loteria: fuente.loteria,
     juego: fuente.juego,
     fecha: normalizarFecha(textoFecha),
-    numeros,
+    numeros: numeros,
     hora_publicacion: new Date().toISOString()
   };
 }
@@ -136,7 +137,7 @@ async function ejecutarScrapingYGuardar() {
       resultados.errores.push({ fuente: fuente.loteria + ' — ' + fuente.juego, error: err.message });
       console.error('[scraper] Error en ' + fuente.loteria + ' — ' + fuente.juego + ':', err.message);
     }
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise(function(r) { setTimeout(r, 1000); });
   }
 
   console.log('[robot] Proceso finalizado. Guardados: ' + resultados.guardados.length + ', Errores: ' + resultados.errores.length);
@@ -144,13 +145,13 @@ async function ejecutarScrapingYGuardar() {
 }
 
 // EJECUCIÓN DIRECTA
-ejecutarScrapingYGuardar().then(() => {
+ejecutarScrapingYGuardar().then(function() {
   process.exit(0);
-}).catch((err) => {
+}).catch(function(err) {
   console.error('[robot] Error crítico:', err);
   process.exit(1);
 });
-[5:48 p.m., 27/7/2026] D'oleo: /**
+[5:54 p.m., 27/7/2026] D'oleo: /**
  * ============================================================
  * BACKEND TODO-EN-UNO — LotoAnalytics (loterías dominicanas)
  * ============================================================
