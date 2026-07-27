@@ -21,7 +21,7 @@ jobs:
       - name: Instalar librerías necesarias
         run: |
           npm init -y
-          npm install axios cheerio jsdom express dotenv
+          npm install axios cheerio jsdom express dotenv node-cron
 
       - name: Ejecutar backend-todo-en-uno
         run: node "backend-todo-en-uno (1).js"
