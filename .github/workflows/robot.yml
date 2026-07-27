@@ -20,7 +20,7 @@ jobs:
       - name: Instalar librerías necesarias
         run: |
           npm init -y
-          npm install axios cheerio jsdom express dotenv node-cron @supabase/supabase-js ws
+          npm install axios cheerio jsdom express dotenv node-cron @supabase/supabase-js ws puppeteer
 
       - name: Ejecutar backend-todo-en-uno
         env:
