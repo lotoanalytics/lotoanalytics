@@ -332,3 +332,4 @@ module.exports = {
  * -- (o, si tu plan lo permite): alter publication supabase_realtime add table public.sorteos;
  * ============================================================
  */
+process.exit(0);
