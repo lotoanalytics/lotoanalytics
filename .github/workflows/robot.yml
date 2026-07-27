@@ -15,12 +15,12 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Instalar librerías necesarias
         run: |
           npm init -y
-          npm install axios cheerio jsdom express dotenv node-cron @supabase/supabase-js
+          npm install axios cheerio jsdom express dotenv node-cron @supabase/supabase-js ws
 
       - name: Ejecutar backend-todo-en-uno
         env:
