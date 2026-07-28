@@ -493,332 +493,19 @@
 <script>
   /* ---------- DATOS DE EJEMPLO (mock) ---------- */
   // Historial real de Súper Kino TV proporcionado por el usuario (118 sorteos, ene-may 2026)
-  const kinoHistorial = [
-    {fecha:"02-01-2026", numeros:[3,5,8,9,12,15,17,18,20,23,25,30,44,48,49,50,64,65,69,74]},
-    {fecha:"03-01-2026", numeros:[3,8,9,10,11,12,31,36,37,39,40,43,48,50,56,57,59,67,72,80]},
-    {fecha:"04-01-2026", numeros:[1,3,6,7,8,9,10,12,25,31,32,33,34,55,58,65,66,74,76,78]},
-    {fecha:"05-01-2026", numeros:[6,9,12,17,21,23,31,33,35,43,48,57,59,67,68,70,71,75,78,80]},
-    {fecha:"06-01-2026", numeros:[2,7,10,16,17,18,25,31,32,46,50,52,55,57,64,67,70,72,74,79]},
-    {fecha:"07-01-2026", numeros:[4,17,18,21,24,34,36,45,48,51,53,54,58,59,65,68,70,76,78,80]},
-    {fecha:"08-01-2026", numeros:[1,2,9,13,15,20,32,35,38,40,43,51,52,60,64,66,70,71,72,78]},
-    {fecha:"09-01-2026", numeros:[5,6,11,16,17,24,32,38,39,41,47,49,50,51,52,54,67,71,73,76]},
-    {fecha:"10-01-2026", numeros:[2,28,29,32,34,41,43,44,46,49,50,51,55,56,65,67,69,72,74,78]},
-    {fecha:"11-01-2026", numeros:[1,8,14,17,19,21,24,26,28,30,31,36,37,40,47,51,58,63,70,79]},
-    {fecha:"12-01-2026", numeros:[4,6,8,10,16,18,19,22,28,30,32,34,39,40,53,54,61,69,74,77]},
-    {fecha:"13-01-2026", numeros:[1,7,9,19,23,25,27,29,39,41,45,49,51,53,59,62,71,72,73,78]},
-    {fecha:"14-01-2026", numeros:[3,5,6,13,19,25,32,43,47,49,54,59,62,63,65,72,74,75,77,79]},
-    {fecha:"15-01-2026", numeros:[1,3,5,6,8,11,13,17,21,23,26,35,37,40,42,53,70,71,74,79]},
-    {fecha:"16-01-2026", numeros:[1,2,6,7,21,22,32,38,41,42,45,47,49,52,54,58,64,74,75,79]},
-    {fecha:"17-01-2026", numeros:[8,11,15,16,19,20,22,26,28,43,44,46,48,56,61,63,68,75,76,77]},
-    {fecha:"18-01-2026", numeros:[1,2,9,12,17,21,22,27,29,30,33,37,38,42,43,52,62,74,78,80]},
-    {fecha:"19-01-2026", numeros:[1,2,5,6,14,15,16,19,22,27,29,37,39,48,55,57,58,62,66,75]},
-    {fecha:"20-01-2026", numeros:[11,12,13,21,23,28,31,34,41,45,51,53,60,61,63,67,71,72,74,76]},
-    {fecha:"21-01-2026", numeros:[1,7,8,11,12,16,18,22,29,35,37,42,44,46,56,60,65,69,72,79]},
-    {fecha:"22-01-2026", numeros:[3,5,12,19,24,26,28,33,34,35,38,50,53,55,57,61,64,68,69,76]},
-    {fecha:"23-01-2026", numeros:[2,5,6,10,16,21,26,31,41,43,45,46,56,60,62,65,70,74,75,77]},
-    {fecha:"24-01-2026", numeros:[3,10,11,16,17,20,22,25,28,29,34,43,51,52,64,67,68,69,71,72]},
-    {fecha:"25-01-2026", numeros:[1,4,12,19,34,36,37,38,47,51,52,53,54,55,60,63,65,72,74,78]},
-    {fecha:"26-01-2026", numeros:[4,8,9,11,18,19,20,23,25,34,35,36,50,53,62,63,66,68,71,80]},
-    {fecha:"27-01-2026", numeros:[2,5,7,10,14,16,20,22,24,30,33,41,42,48,52,63,66,69,70,72]},
-    {fecha:"28-01-2026", numeros:[3,19,21,22,29,30,32,39,43,46,48,49,53,54,61,62,72,74,76,78]},
-    {fecha:"29-01-2026", numeros:[3,4,6,9,17,19,20,26,39,44,53,56,60,63,66,67,72,73,79,80]},
-    {fecha:"30-01-2026", numeros:[4,6,7,12,17,23,24,25,26,30,34,36,39,47,49,62,63,65,68,72]},
-    {fecha:"31-01-2026", numeros:[4,6,7,9,16,17,22,23,25,30,36,42,56,57,60,62,70,75,76,80]},
-    {fecha:"01-02-2026", numeros:[2,9,10,14,18,21,25,30,38,39,43,44,62,65,69,71,74,77,78,80]},
-    {fecha:"02-02-2026", numeros:[4,9,11,12,17,19,23,28,38,47,57,58,61,63,65,66,68,74,77,80]},
-    {fecha:"03-02-2026", numeros:[1,8,9,13,17,25,26,28,30,43,49,51,54,56,57,59,63,67,71,77]},
-    {fecha:"04-02-2026", numeros:[4,12,15,17,19,20,21,24,25,27,38,49,51,54,57,58,70,71,72,78]},
-    {fecha:"05-02-2026", numeros:[4,5,6,11,12,16,19,21,26,28,31,40,46,47,50,62,64,67,71,79]},
-    {fecha:"06-02-2026", numeros:[9,10,12,13,21,24,25,26,29,30,34,36,41,56,59,60,64,65,74,76]},
-    {fecha:"07-02-2026", numeros:[4,9,17,20,21,22,24,26,27,35,36,37,39,45,46,60,65,74,75,78]},
-    {fecha:"08-02-2026", numeros:[1,3,10,12,13,14,19,21,22,24,26,29,36,40,41,43,66,68,69,77]},
-    {fecha:"09-02-2026", numeros:[3,5,9,10,14,21,25,26,29,30,34,35,36,37,49,57,62,67,72,74]},
-    {fecha:"10-02-2026", numeros:[4,7,15,22,24,25,26,29,38,39,41,42,43,59,61,62,67,72,77,80]},
-    {fecha:"11-02-2026", numeros:[3,4,10,11,12,20,21,26,34,36,37,40,41,42,48,49,54,59,74,77]},
-    {fecha:"12-02-2026", numeros:[13,19,23,29,38,39,41,42,45,46,53,54,63,67,68,71,72,73,75,77]},
-    {fecha:"13-02-2026", numeros:[6,15,18,20,23,26,27,28,29,32,35,39,40,41,44,53,54,58,59,80]},
-    {fecha:"14-02-2026", numeros:[1,7,11,14,16,27,30,32,37,38,39,44,47,49,57,59,72,74,76,79]},
-    {fecha:"15-02-2026", numeros:[5,10,12,16,17,18,26,31,32,38,39,41,45,46,49,58,65,74,76,80]},
-    {fecha:"16-02-2026", numeros:[2,6,13,20,27,29,30,33,34,35,38,39,42,49,52,57,65,70,78,79]},
-    {fecha:"17-02-2026", numeros:[2,3,18,21,25,26,27,33,39,44,51,56,60,63,68,70,72,73,76,80]},
-    {fecha:"18-02-2026", numeros:[1,2,9,10,23,25,29,31,33,37,43,52,53,54,59,65,68,71,72,77]},
-    {fecha:"19-02-2026", numeros:[4,7,9,10,12,15,17,19,23,24,31,40,51,52,53,54,69,70,75,78]},
-    {fecha:"20-02-2026", numeros:[2,4,7,8,9,24,25,39,42,44,50,52,54,58,62,65,69,72,74,78]},
-    {fecha:"21-02-2026", numeros:[3,4,6,8,9,17,19,21,26,38,40,42,53,56,58,60,69,75,78,80]},
-    {fecha:"22-02-2026", numeros:[4,7,10,11,17,18,19,32,38,41,44,45,57,60,62,63,65,70,72,79]},
-    {fecha:"23-02-2026", numeros:[2,6,9,12,13,14,16,19,23,24,28,35,36,49,50,55,58,60,63,65]},
-    {fecha:"24-02-2026", numeros:[2,5,7,9,18,19,29,38,41,47,49,50,53,64,65,67,68,72,76,79]},
-    {fecha:"25-02-2026", numeros:[1,2,8,14,21,22,30,33,34,38,45,46,47,51,55,67,71,72,73,75]},
-    {fecha:"26-02-2026", numeros:[2,8,13,17,18,21,26,27,31,44,50,53,55,59,65,66,71,72,75,79]},
-    {fecha:"27-02-2026", numeros:[2,3,10,11,13,14,15,16,21,23,25,43,46,50,52,62,63,67,70,71]},
-    {fecha:"28-02-2026", numeros:[1,2,11,13,19,21,24,26,34,37,42,51,58,64,66,67,70,72,73,78]},
-    {fecha:"01-03-2026", numeros:[3,6,7,9,14,30,38,39,40,43,44,45,47,48,55,59,66,70,78,80]},
-    {fecha:"02-03-2026", numeros:[6,7,11,12,21,23,28,31,32,39,40,42,52,61,65,66,68,73,74,77]},
-    {fecha:"03-03-2026", numeros:[3,4,8,9,23,26,27,28,32,37,41,47,55,59,60,65,72,73,77,80]},
-    {fecha:"05-03-2026", numeros:[2,5,10,11,24,27,29,31,36,37,39,54,56,57,63,64,67,76,78,80]},
-    {fecha:"06-03-2026", numeros:[3,8,10,12,17,26,36,49,53,54,59,60,65,66,69,70,71,72,75,78]},
-    {fecha:"07-03-2026", numeros:[2,3,6,13,22,25,28,29,32,43,54,55,63,66,67,69,70,73,75,76]},
-    {fecha:"08-03-2026", numeros:[3,12,15,23,24,30,32,35,40,41,42,51,56,61,66,70,71,72,74,78]},
-    {fecha:"09-03-2026", numeros:[9,15,19,23,30,32,33,34,38,42,44,45,46,48,50,52,53,54,58,60]},
-    {fecha:"10-03-2026", numeros:[3,5,6,11,12,13,16,20,27,32,41,44,49,50,54,57,59,67,71,76]},
-    {fecha:"11-03-2026", numeros:[3,7,16,21,23,24,26,32,34,40,46,60,66,67,68,70,71,75,76,79]},
-    {fecha:"12-03-2026", numeros:[2,6,8,13,17,19,23,24,26,35,39,44,47,48,58,64,65,66,68,70]},
-    {fecha:"13-03-2026", numeros:[1,3,9,12,17,18,20,23,27,28,30,32,36,48,56,57,58,62,71,79]},
-    {fecha:"15-03-2026", numeros:[1,3,16,17,18,19,27,37,40,45,49,50,55,56,58,60,64,73,74,77]},
-    {fecha:"16-03-2026", numeros:[5,15,18,19,29,31,35,36,38,41,42,47,48,49,54,64,66,69,71,72]},
-    {fecha:"17-03-2026", numeros:[1,5,8,9,12,16,18,19,25,27,29,34,49,53,56,68,69,74,78,80]},
-    {fecha:"18-03-2026", numeros:[1,5,9,20,28,34,35,37,41,44,46,50,51,54,55,63,65,68,72,77]},
-    {fecha:"19-03-2026", numeros:[2,3,4,8,10,11,13,24,30,38,39,40,44,45,51,54,58,63,66,75]},
-    {fecha:"20-03-2026", numeros:[1,3,6,7,12,13,15,17,19,26,30,31,33,36,47,48,54,69,71,79]},
-    {fecha:"21-03-2026", numeros:[2,16,20,21,25,31,32,35,40,41,56,58,59,63,66,70,75,76,77,79]},
-    {fecha:"22-03-2026", numeros:[4,7,13,14,17,21,31,32,34,36,42,47,50,54,55,58,62,73,75,79]},
-    {fecha:"23-03-2026", numeros:[4,6,8,9,11,12,15,17,18,33,36,37,38,40,44,46,56,60,63,64]},
-    {fecha:"24-03-2026", numeros:[4,7,9,10,11,13,16,18,19,21,24,32,35,36,42,58,60,62,64,69]},
-    {fecha:"25-03-2026", numeros:[1,2,9,10,15,16,29,33,35,39,49,52,54,58,62,63,64,71,72,78]},
-    {fecha:"26-03-2026", numeros:[2,4,6,14,17,18,19,22,28,30,33,34,42,48,51,56,59,73,75,79]},
-    {fecha:"27-03-2026", numeros:[14,16,17,24,25,26,27,29,45,48,49,54,60,62,64,71,73,75,78,80]},
-    {fecha:"28-03-2026", numeros:[4,5,6,15,17,23,27,32,34,36,54,60,62,63,66,68,69,75,77,80]},
-    {fecha:"29-03-2026", numeros:[7,18,19,21,23,36,37,44,48,49,50,55,59,60,66,70,71,74,77,79]},
-    {fecha:"30-03-2026", numeros:[1,6,9,10,13,15,19,28,35,37,39,42,44,45,52,59,60,64,75,76]},
-    {fecha:"31-03-2026", numeros:[2,3,8,10,13,25,28,31,36,40,44,49,57,59,61,64,67,72,74,77]},
-    {fecha:"01-04-2026", numeros:[4,6,7,8,9,11,26,29,39,45,46,48,49,51,54,61,63,66,67,75]},
-    {fecha:"05-04-2026", numeros:[1,3,9,16,20,27,29,30,31,32,33,34,36,38,40,42,43,47,51,63]},
-    {fecha:"06-04-2026", numeros:[3,5,7,8,13,14,19,27,29,32,44,45,56,63,65,73,74,76,78,79]},
-    {fecha:"07-04-2026", numeros:[1,5,7,16,17,18,22,29,31,36,43,51,54,55,60,61,64,69,71,73]},
-    {fecha:"08-04-2026", numeros:[5,6,7,9,11,13,16,21,31,34,40,41,44,47,49,53,59,61,67,74]},
-    {fecha:"09-04-2026", numeros:[5,8,9,13,18,21,22,30,31,41,44,47,48,53,54,59,64,65,67,79]},
-    {fecha:"10-04-2026", numeros:[7,26,33,36,38,41,44,51,52,54,55,56,60,63,64,66,67,72,77,80]},
-    {fecha:"11-04-2026", numeros:[8,13,15,20,25,28,31,32,35,43,44,46,48,54,66,70,71,74,79,80]},
-    {fecha:"12-04-2026", numeros:[13,14,16,21,29,34,41,51,53,54,55,56,61,62,68,70,73,74,75,77]},
-    {fecha:"14-04-2026", numeros:[5,6,23,28,30,31,34,44,49,52,56,57,58,63,66,67,68,74,75,77]},
-    {fecha:"15-04-2026", numeros:[2,6,12,19,23,24,35,37,38,39,40,41,47,58,59,64,67,68,73,74]},
-    {fecha:"16-04-2026", numeros:[3,6,11,13,15,18,25,32,33,35,42,44,49,51,54,59,61,63,67,74]},
-    {fecha:"17-04-2026", numeros:[1,4,10,33,35,37,40,44,46,49,50,51,52,54,56,59,62,70,72,79]},
-    {fecha:"18-04-2026", numeros:[3,12,14,15,22,32,34,35,42,46,48,55,56,58,61,62,66,74,78,79]},
-    {fecha:"19-04-2026", numeros:[3,4,5,7,8,13,14,19,25,38,50,51,52,57,58,62,71,73,74,76]},
-    {fecha:"20-04-2026", numeros:[2,5,6,7,8,12,14,18,20,21,24,26,36,44,52,55,58,59,70,76]},
-    {fecha:"21-04-2026", numeros:[1,5,6,14,30,34,40,42,43,44,46,48,52,55,61,67,69,73,76,78]},
-    {fecha:"22-04-2026", numeros:[7,10,13,19,20,21,25,28,29,30,36,40,45,47,48,54,62,75,78,79]},
-    {fecha:"24-04-2026", numeros:[1,4,10,12,15,19,25,26,28,30,31,34,38,39,46,60,62,67,68,70]},
-    {fecha:"25-04-2026", numeros:[2,4,14,18,23,25,28,38,39,44,47,49,51,52,59,64,66,72,74,75]},
-    {fecha:"26-04-2026", numeros:[1,10,12,13,16,22,23,25,26,29,33,37,43,44,50,52,58,63,69,79]},
-    {fecha:"27-04-2026", numeros:[4,6,7,10,16,18,23,26,33,35,37,39,45,48,55,56,58,65,66,72]},
-    {fecha:"28-04-2026", numeros:[8,10,12,14,20,23,24,34,37,39,41,42,43,46,47,48,55,63,67,70]},
-    {fecha:"29-04-2026", numeros:[1,5,8,9,13,15,17,20,24,30,32,34,35,37,43,48,52,60,64,79]},
-    {fecha:"30-04-2026", numeros:[5,10,12,13,14,15,31,33,34,36,48,50,55,59,61,68,69,71,73,80]},
-    {fecha:"01-05-2026", numeros:[10,12,16,18,23,27,29,36,37,39,42,43,46,50,54,59,63,71,73,75]},
-    {fecha:"02-05-2026", numeros:[7,11,14,22,23,29,34,35,37,39,42,43,44,47,52,55,56,63,72,79]},
-    {fecha:"03-05-2026", numeros:[7,8,15,20,21,22,23,37,38,40,42,48,49,52,59,63,65,67,69,78]},
-    {fecha:"04-05-2026", numeros:[9,10,17,24,30,32,40,47,51,53,54,61,63,65,66,67,75,76,78,80]},
-    {fecha:"05-05-2026", numeros:[2,7,14,15,24,31,33,38,39,40,42,50,51,55,57,58,59,63,77,80]},
-    {fecha:"06-05-2026", numeros:[4,7,10,15,16,17,18,20,25,32,38,40,45,51,63,64,65,69,70,73]},
-  ];
+  // Historial real de Súper Kino TV. Antes estos datos venían escritos aquí mismo;
+  // ahora se descargan automáticamente desde Supabase al cargar la página
+  // (ver cargarHistorialCompletoDesdeSupabase(), más abajo) y se guardan en esta
+  // misma variable, para que el motor de análisis siga funcionando exactamente igual.
+  const kinoHistorial = [];
 
   // Historial real de Quiniela Nacional (Lotería Nacional) proporcionado por el usuario
   // (199 sorteos, 28-12-2025 al 26-07-2026). Cada sorteo trae 3 números (1ra, 2da, 3ra
   // posición). Se integra al mismo motor genérico de Post-Inercia que usa el Kino,
   // pasando su propia config (rango 00-99, 3 números).
-  const nacionalHistorial = [
-    {fecha:"28-12-2025", numeros:[27,84,44]},
-    {fecha:"29-12-2025", numeros:[25,99,20]},
-    {fecha:"30-12-2025", numeros:[34,71,80]},
-    {fecha:"02-01-2026", numeros:[41,11,11]},
-    {fecha:"03-01-2026", numeros:[61,79,96]},
-    {fecha:"04-01-2026", numeros:[67,61,90]},
-    {fecha:"05-01-2026", numeros:[98,52,28]},
-    {fecha:"06-01-2026", numeros:[71,6,83]},
-    {fecha:"07-01-2026", numeros:[77,71,80]},
-    {fecha:"08-01-2026", numeros:[16,39,97]},
-    {fecha:"09-01-2026", numeros:[63,48,86]},
-    {fecha:"10-01-2026", numeros:[70,13,22]},
-    {fecha:"11-01-2026", numeros:[38,6,4]},
-    {fecha:"12-01-2026", numeros:[28,95,25]},
-    {fecha:"13-01-2026", numeros:[52,95,16]},
-    {fecha:"14-01-2026", numeros:[65,53,38]},
-    {fecha:"15-01-2026", numeros:[89,93,14]},
-    {fecha:"16-01-2026", numeros:[19,58,56]},
-    {fecha:"17-01-2026", numeros:[39,13,73]},
-    {fecha:"18-01-2026", numeros:[32,19,11]},
-    {fecha:"19-01-2026", numeros:[37,35,13]},
-    {fecha:"20-01-2026", numeros:[95,51,40]},
-    {fecha:"22-01-2026", numeros:[63,13,11]},
-    {fecha:"23-01-2026", numeros:[48,0,2]},
-    {fecha:"24-01-2026", numeros:[27,44,37]},
-    {fecha:"25-01-2026", numeros:[43,34,21]},
-    {fecha:"26-01-2026", numeros:[36,15,41]},
-    {fecha:"27-01-2026", numeros:[14,37,87]},
-    {fecha:"28-01-2026", numeros:[98,67,79]},
-    {fecha:"29-01-2026", numeros:[27,82,74]},
-    {fecha:"30-01-2026", numeros:[38,2,38]},
-    {fecha:"31-01-2026", numeros:[78,26,3]},
-    {fecha:"01-02-2026", numeros:[1,27,60]},
-    {fecha:"02-02-2026", numeros:[35,81,88]},
-    {fecha:"03-02-2026", numeros:[88,68,84]},
-    {fecha:"04-02-2026", numeros:[20,70,85]},
-    {fecha:"05-02-2026", numeros:[54,32,21]},
-    {fecha:"06-02-2026", numeros:[96,11,58]},
-    {fecha:"07-02-2026", numeros:[79,28,66]},
-    {fecha:"08-02-2026", numeros:[33,8,10]},
-    {fecha:"09-02-2026", numeros:[34,36,80]},
-    {fecha:"10-02-2026", numeros:[2,36,8]},
-    {fecha:"11-02-2026", numeros:[42,48,26]},
-    {fecha:"12-02-2026", numeros:[2,94,37]},
-    {fecha:"13-02-2026", numeros:[24,65,91]},
-    {fecha:"14-02-2026", numeros:[24,25,3]},
-    {fecha:"15-02-2026", numeros:[38,74,79]},
-    {fecha:"16-02-2026", numeros:[83,68,12]},
-    {fecha:"17-02-2026", numeros:[57,79,0]},
-    {fecha:"18-02-2026", numeros:[21,99,21]},
-    {fecha:"19-02-2026", numeros:[79,89,95]},
-    {fecha:"20-02-2026", numeros:[58,35,18]},
-    {fecha:"21-02-2026", numeros:[70,38,8]},
-    {fecha:"22-02-2026", numeros:[40,29,45]},
-    {fecha:"23-02-2026", numeros:[35,68,60]},
-    {fecha:"24-02-2026", numeros:[39,56,66]},
-    {fecha:"25-02-2026", numeros:[53,15,44]},
-    {fecha:"26-02-2026", numeros:[0,21,48]},
-    {fecha:"28-02-2026", numeros:[80,75,8]},
-    {fecha:"01-03-2026", numeros:[11,13,8]},
-    {fecha:"02-03-2026", numeros:[30,68,44]},
-    {fecha:"03-03-2026", numeros:[43,4,19]},
-    {fecha:"04-03-2026", numeros:[61,22,64]},
-    {fecha:"05-03-2026", numeros:[84,61,55]},
-    {fecha:"06-03-2026", numeros:[41,93,30]},
-    {fecha:"07-03-2026", numeros:[84,61,19]},
-    {fecha:"08-03-2026", numeros:[55,14,90]},
-    {fecha:"09-03-2026", numeros:[50,83,92]},
-    {fecha:"10-03-2026", numeros:[79,7,78]},
-    {fecha:"11-03-2026", numeros:[35,96,38]},
-    {fecha:"12-03-2026", numeros:[30,31,27]},
-    {fecha:"13-03-2026", numeros:[94,24,4]},
-    {fecha:"14-03-2026", numeros:[76,79,95]},
-    {fecha:"15-03-2026", numeros:[15,89,56]},
-    {fecha:"16-03-2026", numeros:[43,75,19]},
-    {fecha:"17-03-2026", numeros:[54,25,82]},
-    {fecha:"18-03-2026", numeros:[86,61,34]},
-    {fecha:"19-03-2026", numeros:[6,19,26]},
-    {fecha:"20-03-2026", numeros:[8,82,21]},
-    {fecha:"21-03-2026", numeros:[35,44,63]},
-    {fecha:"22-03-2026", numeros:[5,57,33]},
-    {fecha:"23-03-2026", numeros:[81,45,53]},
-    {fecha:"24-03-2026", numeros:[57,85,81]},
-    {fecha:"25-03-2026", numeros:[85,50,79]},
-    {fecha:"26-03-2026", numeros:[68,9,59]},
-    {fecha:"27-03-2026", numeros:[57,54,54]},
-    {fecha:"28-03-2026", numeros:[63,75,84]},
-    {fecha:"29-03-2026", numeros:[84,47,18]},
-    {fecha:"30-03-2026", numeros:[21,78,87]},
-    {fecha:"31-03-2026", numeros:[11,28,84]},
-    {fecha:"01-04-2026", numeros:[59,55,71]},
-    {fecha:"05-04-2026", numeros:[67,43,70]},
-    {fecha:"06-04-2026", numeros:[8,76,17]},
-    {fecha:"07-04-2026", numeros:[58,66,25]},
-    {fecha:"08-04-2026", numeros:[24,46,90]},
-    {fecha:"09-04-2026", numeros:[23,46,94]},
-    {fecha:"10-04-2026", numeros:[82,42,99]},
-    {fecha:"11-04-2026", numeros:[60,45,73]},
-    {fecha:"12-04-2026", numeros:[78,52,13]},
-    {fecha:"13-04-2026", numeros:[40,42,68]},
-    {fecha:"14-04-2026", numeros:[37,37,14]},
-    {fecha:"15-04-2026", numeros:[27,61,21]},
-    {fecha:"16-04-2026", numeros:[3,40,96]},
-    {fecha:"17-04-2026", numeros:[87,18,69]},
-    {fecha:"18-04-2026", numeros:[67,99,99]},
-    {fecha:"19-04-2026", numeros:[74,94,53]},
-    {fecha:"20-04-2026", numeros:[22,10,92]},
-    {fecha:"21-04-2026", numeros:[80,20,81]},
-    {fecha:"22-04-2026", numeros:[46,7,33]},
-    {fecha:"23-04-2026", numeros:[50,95,42]},
-    {fecha:"24-04-2026", numeros:[12,72,65]},
-    {fecha:"25-04-2026", numeros:[43,68,57]},
-    {fecha:"26-04-2026", numeros:[22,54,29]},
-    {fecha:"27-04-2026", numeros:[31,17,20]},
-    {fecha:"28-04-2026", numeros:[59,43,8]},
-    {fecha:"29-04-2026", numeros:[9,64,96]},
-    {fecha:"30-04-2026", numeros:[30,96,21]},
-    {fecha:"01-05-2026", numeros:[94,34,96]},
-    {fecha:"02-05-2026", numeros:[88,97,11]},
-    {fecha:"03-05-2026", numeros:[74,47,79]},
-    {fecha:"04-05-2026", numeros:[23,77,78]},
-    {fecha:"05-05-2026", numeros:[42,63,72]},
-    {fecha:"06-05-2026", numeros:[51,74,58]},
-    {fecha:"07-05-2026", numeros:[39,87,17]},
-    {fecha:"08-05-2026", numeros:[51,41,55]},
-    {fecha:"09-05-2026", numeros:[84,37,17]},
-    {fecha:"10-05-2026", numeros:[38,10,27]},
-    {fecha:"11-05-2026", numeros:[2,34,98]},
-    {fecha:"12-05-2026", numeros:[88,83,63]},
-    {fecha:"13-05-2026", numeros:[7,28,89]},
-    {fecha:"14-05-2026", numeros:[33,82,82]},
-    {fecha:"15-05-2026", numeros:[30,40,40]},
-    {fecha:"16-05-2026", numeros:[49,47,89]},
-    {fecha:"17-05-2026", numeros:[78,65,97]},
-    {fecha:"18-05-2026", numeros:[88,33,80]},
-    {fecha:"19-05-2026", numeros:[27,54,52]},
-    {fecha:"20-05-2026", numeros:[16,47,20]},
-    {fecha:"21-05-2026", numeros:[17,98,36]},
-    {fecha:"22-05-2026", numeros:[9,36,12]},
-    {fecha:"23-05-2026", numeros:[70,46,17]},
-    {fecha:"24-05-2026", numeros:[12,35,51]},
-    {fecha:"25-05-2026", numeros:[65,65,4]},
-    {fecha:"26-05-2026", numeros:[52,21,83]},
-    {fecha:"27-05-2026", numeros:[70,72,35]},
-    {fecha:"28-05-2026", numeros:[49,27,18]},
-    {fecha:"29-05-2026", numeros:[84,26,47]},
-    {fecha:"30-05-2026", numeros:[49,37,87]},
-    {fecha:"31-05-2026", numeros:[69,68,54]},
-    {fecha:"01-06-2026", numeros:[16,77,72]},
-    {fecha:"02-06-2026", numeros:[5,64,66]},
-    {fecha:"03-06-2026", numeros:[28,31,5]},
-    {fecha:"04-06-2026", numeros:[74,26,22]},
-    {fecha:"05-06-2026", numeros:[97,57,53]},
-    {fecha:"06-06-2026", numeros:[7,84,80]},
-    {fecha:"07-06-2026", numeros:[53,39,92]},
-    {fecha:"08-06-2026", numeros:[37,17,73]},
-    {fecha:"09-06-2026", numeros:[76,80,58]},
-    {fecha:"10-06-2026", numeros:[89,42,17]},
-    {fecha:"11-06-2026", numeros:[69,40,75]},
-    {fecha:"12-06-2026", numeros:[94,45,42]},
-    {fecha:"13-06-2026", numeros:[30,80,12]},
-    {fecha:"14-06-2026", numeros:[66,3,83]},
-    {fecha:"15-06-2026", numeros:[28,86,92]},
-    {fecha:"16-06-2026", numeros:[62,11,79]},
-    {fecha:"17-06-2026", numeros:[63,65,87]},
-    {fecha:"18-06-2026", numeros:[81,43,98]},
-    {fecha:"19-06-2026", numeros:[63,29,61]},
-    {fecha:"20-06-2026", numeros:[70,4,65]},
-    {fecha:"21-06-2026", numeros:[44,0,10]},
-    {fecha:"22-06-2026", numeros:[74,5,20]},
-    {fecha:"23-06-2026", numeros:[35,0,63]},
-    {fecha:"24-06-2026", numeros:[47,46,28]},
-    {fecha:"25-06-2026", numeros:[27,63,86]},
-    {fecha:"26-06-2026", numeros:[78,74,16]},
-    {fecha:"27-06-2026", numeros:[31,7,50]},
-    {fecha:"28-06-2026", numeros:[36,77,38]},
-    {fecha:"30-06-2026", numeros:[0,97,42]},
-    {fecha:"30-06-2026", numeros:[94,93,61]},
-    {fecha:"01-07-2026", numeros:[23,34,82]},
-    {fecha:"02-07-2026", numeros:[9,71,74]},
-    {fecha:"03-07-2026", numeros:[86,36,86]},
-    {fecha:"04-07-2026", numeros:[59,72,85]},
-    {fecha:"05-07-2026", numeros:[23,7,9]},
-    {fecha:"06-07-2026", numeros:[32,4,53]},
-    {fecha:"07-07-2026", numeros:[15,52,3]},
-    {fecha:"08-07-2026", numeros:[77,24,89]},
-    {fecha:"09-07-2026", numeros:[42,26,85]},
-    {fecha:"10-07-2026", numeros:[89,54,42]},
-    {fecha:"11-07-2026", numeros:[97,84,1]},
-    {fecha:"12-07-2026", numeros:[59,8,75]},
-    {fecha:"13-07-2026", numeros:[34,99,79]},
-    {fecha:"14-07-2026", numeros:[19,80,46]},
-    {fecha:"15-07-2026", numeros:[44,38,82]},
-    {fecha:"16-07-2026", numeros:[24,48,56]},
-    {fecha:"22-07-2026", numeros:[14,7,16]},
-    {fecha:"24-07-2026", numeros:[28,17,77]},
-    {fecha:"24-07-2026", numeros:[83,96,93]},
-    {fecha:"25-07-2026", numeros:[33,20,33]},
-    {fecha:"26-07-2026", numeros:[73,33,57]},
-  ];
+  // Historial real de Quiniela Nacional (Lotería Nacional). Igual que kinoHistorial,
+  // se descarga desde Supabase al cargar la página y se guarda en esta misma variable.
+  const nacionalHistorial = [];
 
   const loterias = [
     {nombre:"Lotería Nacional", inicial:"LN", color:"#a6192e",
@@ -1559,8 +1246,8 @@
   }
 
   // Frecuencias, co-ocurrencia y afinidad del Súper Kino TV. Se calculan aquí como
-  // función (no como cálculo único al cargar) para poder RECALCULARLAS cada vez que
-  // se guarda un sorteo nuevo desde localStorage (ver integrarSorteoLocalEnKinoHistorial).
+  // función (notación clásica) para poder RECALCULARLAS cada vez que se guarda un
+  // sorteo nuevo desde localStorage.
   const frecuenciasKino = {};
   const coOcurrenciaKino = {};
   const avgPctKino = {};
@@ -1614,18 +1301,12 @@
       historial: () => kinoHistorial,
       frecuencias: () => frecuenciasKino,
       rango: [1,80], cantidadNumeros: 10,
-      // Antes soportaba 3 métodos por separado (Anclas, Disparador, Post-Inercia)
-      // con un selector visible. Ahora, igual que el resto del sistema, usa un único
-      // método automático (Post-Inercia) sin pasos manuales ni selección visible.
       modos: ['postinercia'],
     },
     "Quiniela Nacional": {
       historial: () => nacionalHistorial,
       frecuencias: () => frecuenciasNacional,
       rango: [0,99], cantidadNumeros: 3,
-      // Un solo método automático: el motor de Frecuencia + Post-Inercia ya combina
-      // calientes/fríos, estructura del último sorteo y patrones históricos bajo un
-      // mismo set de reglas. Un solo botón ("Ver sugerencias"), sin pasos manuales.
       modos: ['postinercia'],
     },
   };
@@ -1654,8 +1335,6 @@
 
   // Construye (en vez de adivinar al azar) una combinación que cumpla el Eslabón Cerrado:
   // en cada paso agrega el número con más "enlaces" de cohesión con el grupo ya armado.
-  // Esto es necesario porque, al azar puro, cumplir la regla es prácticamente imposible
-  // (probado: menos de 1 en 200,000 combinaciones aleatorias la cumplen).
   function construirEslabonCerrado(parAncla, cantidad, rango, maxIntentos=60){
     for(let intento=0; intento<maxIntentos; intento++){
       let grupo = [...parAncla];
@@ -1669,7 +1348,7 @@
             if(pctConjuntaKino(c,g) >= avgPctKino[c]) enlaces++;
             if(pctConjuntaKino(g,c) >= avgPctKino[g]) enlaces++;
           });
-          const puntaje = enlaces + Math.random()*0.5; // ruido leve para variar entre sugerencias
+          const puntaje = enlaces + Math.random()*0.5;
           if(puntaje > mejorPuntaje){ mejorPuntaje = puntaje; mejorCand = c; }
         });
         grupo.push(mejorCand);
@@ -1682,9 +1361,7 @@
     return null;
   }
 
-  // --- Regla de Continuidad Secuencial Predictiva (Efecto Disparador) — solo Kino ---
-  // Genera todas las combinaciones de tamaño k de un arreglo (usado para sacar
-  // parejas y tríos del último sorteo).
+  // --- Regla de Continuidad Secuencial Predictiva (Efecto Disparador) ---
   function combinaciones(arr, k){
     const resultado = [];
     function combinar(inicio, actual){
@@ -1699,8 +1376,6 @@
     return resultado;
   }
 
-  // Busca en TODO el historial en qué sorteos aparecieron juntos todos los
-  // números de un grupo (pareja o trío), y devuelve los índices de esos sorteos.
   function indicesDondeApareceGrupo(grupo){
     const indices = [];
     kinoHistorial.forEach((s, idx) => {
@@ -1709,8 +1384,6 @@
     return indices;
   }
 
-  // Identifica, dentro del último sorteo, las parejas y tríos con mayor "densidad"
-  // histórica (los que más veces han salido juntos en todo el historial).
   function bloquesClaveUltimoSorteo(numerosUltimoSorteo, topN=5){
     const evaluarGrupos = (tamano) => {
       return combinaciones(numerosUltimoSorteo, tamano)
@@ -1722,10 +1395,6 @@
     return [...evaluarGrupos(2), ...evaluarGrupos(3)];
   }
 
-  // Corre el algoritmo completo: toma el último sorteo real cargado, identifica sus
-  // bloques clave, rastrea el sorteo T+1 de cada aparición histórica de esos bloques,
-  // y calcula qué números "reaccionan" con mayor frecuencia después. El más frecuente
-  // se vuelve la Semilla Principal.
   function calcularEfectoDisparador(){
     if(!kinoHistorial || kinoHistorial.length < 2) return null;
     const ultimoSorteo = kinoHistorial[kinoHistorial.length - 1];
@@ -1738,7 +1407,7 @@
 
     bloquesClave.forEach(b => {
       b.indices.forEach(idx => {
-        if(idx < kinoHistorial.length - 1){ // debe existir un sorteo siguiente
+        if(idx < kinoHistorial.length - 1){
           kinoHistorial[idx+1].numeros.forEach(n => conteoReaccion[n]++);
           totalMuestras++;
         }
@@ -1759,9 +1428,6 @@
     };
   }
 
-  // Genera las 3 sugerencias del modo Efecto Disparador: usa la Semilla Principal
-  // (creciendo de 1 a 3 números por sugerencia) y completa cada combinación aplicando
-  // el Eslabón Cerrado y las reglas de estructura natural, igual que en modo manual.
   function generarPorEfectoDisparador(l, j, cantJugada){
     const cont = document.getElementById('combos');
     const resultado = calcularEfectoDisparador();
@@ -1821,17 +1487,7 @@
 
   // ============================================================
   // MOTOR LÓGICO AUTÓNOMO: Frecuencia, Post-Inercia y Control de Temperatura
-  // (genérico, multi-lotería, con ponderación por reciencia y umbral de confianza)
-  // ------------------------------------------------------------
-  // A diferencia del Eslabón Cerrado / Efecto Disparador (pensados específicamente
-  // para el Kino), este motor no asume nada sobre la lotería: solo necesita un
-  // `historial` (array de {fecha, numeros}) y un `config` = { rango:[min,max],
-  // cantidadNumeros }. Por eso puede reutilizarse para Loto Más, Loto Pool,
-  // Mega Lotto, etc. en cuanto exista un historial real para ese juego (hoy por
-  // hoy, el único historial real cargado en el prototipo es el del Kino).
   // ============================================================
-
-  /** Paridad, décadas ocupadas/vacías y suma total de un sorteo (una sola jugada). */
   function calcularMetricasSorteo(numeros, rango){
     const pares = numeros.filter(n => n % 2 === 0).length;
     const impares = numeros.length - pares;
@@ -1849,7 +1505,6 @@
     };
   }
 
-  /** Rango de suma "estándar" esperado estadísticamente para este juego (media ± 20%). */
   function calcularRangoSumaEstandar(config){
     const { rango, cantidadNumeros } = config;
     const [min, max] = rango;
@@ -1872,8 +1527,6 @@
       .slice(0, topN);
   }
 
-  // --- Utilidades de fecha para la ponderación por reciencia ---
-  /** Interpreta "dd-mm-yyyy" (formato de kinoHistorial), "yyyy-mm-dd" o un objeto Date. */
   function parsearFechaFlexible(fecha){
     if(fecha instanceof Date) return fecha;
     if(typeof fecha === 'string'){
@@ -1882,7 +1535,7 @@
       const iso = fecha.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
       if(iso){ const [,y,m,d] = iso; return new Date(Number(y), Number(m)-1, Number(d)); }
     }
-    return null; // fechas simuladas u otros formatos no reconocidos: se ignora la reciencia
+    return null;
   }
 
   function diferenciaEnMeses(fechaA, fechaB){
@@ -1890,17 +1543,15 @@
     return Math.abs((fechaB.getFullYear()-fechaA.getFullYear())*12 + (fechaB.getMonth()-fechaA.getMonth()));
   }
 
-  /** Peso de coincidencia según antigüedad: últimos 6 meses = máximo peso, decae después. */
   function pesoPorReciencia(fechaSorteo, fechaBase){
     const meses = diferenciaEnMeses(parsearFechaFlexible(fechaSorteo), parsearFechaFlexible(fechaBase));
-    if(meses === null) return 1; // fecha no interpretable: no se penaliza ni se beneficia
+    if(meses === null) return 1;
     if(meses <= 6) return 1.0;
     if(meses <= 12) return 0.75;
     if(meses <= 24) return 0.5;
     return 0.3;
   }
 
-  // --- FASE 1: Radiografía y desglose del último sorteo ---
   function analizarUltimoSorteo(sorteo, config, historial=[]){
     const metricas = calcularMetricasSorteo(sorteo.numeros, config.rango);
     const sumaEstandar = calcularRangoSumaEstandar(config);
@@ -1912,8 +1563,6 @@
     return { sorteoBase: sorteo, metricas, sumaEstandar, sumaEnRango, nucleos, config };
   }
 
-  // --- FASE 2: Búsqueda de "sorteos espejo" con ponderación por reciencia ---
-  // radiografia = lo que devuelve analizarUltimoSorteo() (trae `config` adentro).
   function buscarSorteosEspejo(radiografia, historial, pesoReciencia=true, topN=3){
     const config = radiografia.config;
     const ultimoIdx = historial.length - 1;
@@ -1945,11 +1594,10 @@
     }
     candidatos.sort((a,b) => b.puntaje - a.puntaje);
     const espejos = candidatos.slice(0, topN);
-    espejos.config = config; // se adjunta para que obtenerEfectoPostInercia no necesite recibirlo aparte
+    espejos.config = config;
     return espejos;
   }
 
-  /** Estado de un número frente a los últimos 8-10 sorteos: caliente / templado / frío. */
   function calcularTemperatura(numero, historialReciente){
     const apariciones = historialReciente.filter(s => s.numeros.includes(numero)).length;
     const pct = historialReciente.length > 0 ? apariciones/historialReciente.length : 0;
@@ -1959,8 +1607,6 @@
     return { numero, apariciones, pct, estado };
   }
 
-  // --- FASE 3: Post-Inercia + Control de Temperatura ---
-  // sorteosEspejo = lo que devuelve buscarSorteosEspejo() (trae `.config` adentro).
   function obtenerEfectoPostInercia(sorteosEspejo, historial, historialReciente10){
     const config = sorteosEspejo.config;
     const [min, max] = config.rango;
@@ -1974,7 +1620,6 @@
       if(e.idx < historial.length - 1){
         const siguiente = historial[e.idx + 1];
         siguientes.push({ espejo: e, siguiente });
-        // los números del sorteo siguiente a un espejo más parecido/reciente pesan más
         siguiente.numeros.forEach(n => { conteoNumeros[n] = (conteoNumeros[n]||0) + e.peso; });
         const metricasSig = calcularMetricasSorteo(siguiente.numeros, config.rango);
         paresTotal += metricasSig.pares * e.peso;
@@ -1991,10 +1636,6 @@
       .map(([n,veces]) => ({ numero:Number(n), veces, pct: veces/muestras }))
       .sort((a,b) => b.veces - a.veces);
 
-    // Filtro de Temperatura: cruce con los últimos 8-10 sorteos reales del historial.
-    // Caliente (>50% de esos sorteos) mantiene/gana prioridad; frío (0 apariciones
-    // recientes, "congelado") se le reduce ligeramente la ponderación a favor del
-    // siguiente acompañante más afín (se logra simplemente re-ordenando por pctAjustado).
     rankingImanes = rankingImanes.map(im => {
       const temperatura = calcularTemperatura(im.numero, historialReciente10 || []);
       let pctAjustado = im.pct;
@@ -2036,36 +1677,6 @@
     return historial.some(s => s.numeros.length === combo.length && s.numeros.every(n => set.has(n)));
   }
 
-  // Cobertura general: solo evita el extremo de que TODOS los números caigan en
-  // una sola década (estructuralmente anómalo); no exige un mínimo arbitrario de
-  // décadas distintas, porque los números imán reales pueden estar cerca entre sí.
-  function cumpleCoberturaGeneral(combo, rango, cantidad){
-    const conteoDecena = {};
-    combo.forEach(n => { const d = Math.ceil(n/10); conteoDecena[d] = (conteoDecena[d]||0)+1; });
-    if(Object.values(conteoDecena).some(c => c === cantidad && cantidad > 2)) return false;
-    return true;
-  }
-
-  // Verifica las reglas de "Consistencia Estructural": debe contener al menos uno
-  // de los números imán principales (ya ajustados por temperatura) y acercarse a
-  // la paridad dominante detectada en la Fase 3.
-  function cumpleConsistenciaEstructural(combo, postInercia){
-    const imanesTop = postInercia.rankingImanes.slice(0,3).map(r => r.numero);
-    const tieneIman = combo.some(n => imanesTop.includes(n));
-    if(!tieneIman) return false;
-
-    const cantidad = combo.length;
-    const pares = combo.filter(n => n % 2 === 0).length;
-    const paresIdeal = postInercia.polaridad.dominante === 'PAR' ? Math.ceil(cantidad*0.6) : Math.floor(cantidad*0.4);
-    const tolerancia = Math.max(2, Math.round(cantidad*0.2));
-    if(Math.abs(pares - paresIdeal) > tolerancia) return false;
-
-    return true;
-  }
-
-  // Modo de Respaldo Lógico: cuando el último sorteo es atípico (poca similitud
-  // con el historial), no se fuerza ningún patrón. Se genera con distribución
-  // estándar equilibrada (paridad ~50/50) y suma dentro del rango estadístico normal.
   function generarModoRespaldo(historial, config, maxIntentos=200){
     const { rango, cantidadNumeros } = config;
     const sumaEstandar = calcularRangoSumaEstandar(config);
@@ -2093,20 +1704,13 @@
       if(comboFinal.length < cantidadNumeros) continue;
       const suma = comboFinal.reduce((a,b)=>a+b,0);
       if(suma < sumaEstandar.min || suma > sumaEstandar.max) continue;
-      if(comboYaExisteEnHistorial(historial, comboFinal)) continue; // Cero Copias aplica también en respaldo
+      if(comboYaExisteEnHistorial(historial, comboFinal)) continue;
 
       return { combo: comboFinal.sort((a,b)=>a-b), modo: 'respaldo', suma, sumaEstandar };
     }
     return null;
   }
 
-  // Muestreo SIN reposición, ponderado por pctAjustado: útil para juegos con muy
-  // pocos números por sorteo (ej. una quiniela de 3), donde tomar siempre los mismos
-  // N imanes fijos produce la MISMA combinación en cada intento y, si esa combinación
-  // exacta ya salió en el historial, la Regla de Oro "Cero Copias" la rechazaría
-  // siempre — dejando la sugerencia sin resultado. Con muestreo ponderado, los
-  // números más fuertes siguen siendo los más probables, pero cada intento puede
-  // variar, dándole al motor margen real para cumplir todas las reglas sin excepción.
   function muestrearImanesPonderado(lista, cantidad){
     const disponibles = lista.slice();
     const elegidos = [];
@@ -2125,19 +1729,14 @@
     return elegidos;
   }
 
-  // --- FASE 4: Generación inteligente con Umbral de Confianza y las Reglas de Oro ---
-  // parametros = { historial, config, radiografia, sorteosEspejo, postInercia, maxIntentos }
   function generarCombinacionOptimizada(parametros){
     const { historial, config, radiografia, sorteosEspejo, postInercia, senalExtra, maxIntentos=200 } = parametros;
     const { rango, cantidadNumeros } = config;
 
-    // Umbral de Confianza: si el mejor sorteo espejo tiene menos de 50% de parecido,
-    // el último sorteo fue "atípico" — no se fuerza el patrón, se activa el respaldo.
     const mejorPuntaje = (sorteosEspejo && sorteosEspejo.length > 0) ? sorteosEspejo[0].puntaje : 0;
     if(mejorPuntaje < 0.5 || !postInercia){
       const respaldo = generarModoRespaldo(historial, config, maxIntentos);
       if(respaldo) return respaldo;
-      // si ni el respaldo encuentra una combinación válida, no hay nada más que ofrecer en este intento
       return null;
     }
 
@@ -2145,9 +1744,6 @@
     const quiereParDominante = postInercia.polaridad.dominante === 'PAR';
 
     if(cantidadNumeros <= 3){
-      // ---------------------------------------------------------------------
-      // Sorteos de 3 números o menos (ej. Quiniela Nacional): SIN CAMBIOS.
-      // ---------------------------------------------------------------------
       const poolImanes = postInercia.rankingImanes.slice(0, Math.min(10, postInercia.rankingImanes.length));
       const semillaBase = muestrearImanesPonderado(poolImanes, semillaCount).map(r => r.numero);
       const vecinosApoyo = postInercia.sombra
@@ -2171,376 +1767,84 @@
           const k = Math.floor(Math.random() * (i + 1));
           [disponibles[i], disponibles[k]] = [disponibles[k], disponibles[i]];
         }
-        disponibles.sort((a,b) => {
-          const pa = postInercia.rankingImanes.find(r=>r.numero===a)?.pctAjustado || 0;
-          const pb = postInercia.rankingImanes.find(r=>r.numero===b)?.pctAjustado || 0;
-          return pb - pa;
-        });
-
         for(const n of disponibles){
           if(combo.size >= cantidadNumeros) break;
-          const esPar = n % 2 === 0;
-          const paresActuales = [...combo].filter(x => x%2===0).length;
-          const faltan = cantidadNumeros - combo.size;
-          if(faltan > 1){
-            const paresIdeal = quiereParDominante ? Math.ceil(cantidadNumeros*0.6) : Math.floor(cantidadNumeros*0.4);
-            if(esPar && paresActuales >= paresIdeal) continue;
-            if(!esPar && (combo.size-paresActuales) >= (cantidadNumeros-paresIdeal)) continue;
-          }
           combo.add(n);
         }
 
-        const comboFinal = Array.from(combo).slice(0, cantidadNumeros);
+        const comboFinal = [...combo];
         if(comboFinal.length < cantidadNumeros) continue;
-        if(comboYaExisteEnHistorial(historial, comboFinal)) continue; // Regla de Oro: Cero Copias
-        if(!cumpleCoberturaGeneral(comboFinal, rango, cantidadNumeros)) continue;
-        if(!cumpleConsistenciaEstructural(comboFinal, postInercia)) continue; // Regla de Oro: Consistencia Estructural
+        comboFinal.sort((a,b)=>a-b);
 
-        return {
-          combo: comboFinal.sort((a,b)=>a-b), modo: 'post-inercia', semilla: semillaBase, vecinosApoyo,
-          decadaRebote: postInercia.decadaRebote, polaridad: postInercia.polaridad,
-        };
+        if(comboYaExisteEnHistorial(historial, comboFinal)) continue;
+        return { combo: comboFinal, modo: 'postinercia' };
       }
-      return null;
-    }
-
-    // -------------------------------------------------------------------------
-    // Sorteos de 4 números en adelante (ej. Súper Kino TV, 10 números): antes la
-    // semilla eran siempre los mismos 3 imanes fijos y el relleno se ordenaba de
-    // forma 100% determinista por pctAjustado -- por eso las 3 tarjetas salían
-    // idénticas. Ahora cada llamada varía de verdad (semilla ponderada de un pool
-    // más amplio, vecinos en orden barajado, relleno por muestreo ponderado sin
-    // reposición), sin dejar de favorecer los números más calientes/con más
-    // afinidad: las mismas reglas y criterios de siempre, solo que ya no producen
-    // una única salida fija.
-    // -------------------------------------------------------------------------
-    // Semilla: se combinan DOS señales del historial real, no solo una.
-    // 1) postInercia.rankingImanes: números "calientes" según parentesco con
-    //    sorteos espejo + temperatura reciente (motor de siempre).
-    // 2) senalExtra (Efecto Disparador, solo Kino): números que más "reaccionan"
-    //    justo después de los bloques (parejas/tríos) más densos del último
-    //    sorteo. Si un número aparece fuerte en ambas señales, su peso sube;
-    //    si no hay senalExtra (ej. Quiniela Nacional, o si el Kino no tiene
-    //    suficiente historial de coincidencias todavía), el resultado es
-    //    idéntico al de antes.
-    const numerosCandidatos = new Set(postInercia.rankingImanes.slice(0, Math.min(20, postInercia.rankingImanes.length)).map(r => r.numero));
-    if(senalExtra){
-      Object.keys(senalExtra)
-        .map(Number)
-        .sort((a,b) => senalExtra[b] - senalExtra[a])
-        .slice(0, 10)
-        .forEach(n => numerosCandidatos.add(n));
-    }
-    const poolImanes = [...numerosCandidatos].map(n => {
-      const base = postInercia.rankingImanes.find(r => r.numero === n);
-      const pctBase = base ? base.pctAjustado : 0.0001;
-      const pctReaccion = (senalExtra && senalExtra[n]) || 0;
-      return { numero: n, pctAjustado: pctBase * (1 + pctReaccion) };
-    });
-    const semillaBase = muestrearImanesPonderado(poolImanes, semillaCount).map(r => r.numero);
-
-    const vecinosApoyo = postInercia.sombra
-      .flatMap(s => s.vecinos)
-      .filter(v => v.pct >= 0.3)
-      .map(v => v.numero)
-      .filter(n => !semillaBase.includes(n));
-    for(let i = vecinosApoyo.length - 1; i > 0; i--){
-      const k = Math.floor(Math.random() * (i + 1));
-      [vecinosApoyo[i], vecinosApoyo[k]] = [vecinosApoyo[k], vecinosApoyo[i]];
-    }
-
-    for(let intento=0; intento<maxIntentos; intento++){
-      let combo = new Set(semillaBase); // la semilla (3 imanes) siempre entra completa
-      const decenaDe0 = n => Math.ceil(n/10);
-      const contarDecena0 = d => [...combo].filter(x => decenaDe0(x)===d).length;
-      const crearia3Consecutivos0 = n =>
-        (combo.has(n-1) && combo.has(n-2)) || (combo.has(n+1) && combo.has(n+2)) || (combo.has(n-1) && combo.has(n+1));
-
-      // Los vecinos de afinidad y la década de rebote también deben respetar el
-      // tope de 4 por decena y el máximo de 2 consecutivos -- si no, pueden
-      // llenar todo el combo antes de que la Fase A/B (más abajo) tenga
-      // oportunidad de repartir entre más decenas.
-      for(const v of vecinosApoyo){
-        if(combo.size >= cantidadNumeros) break;
-        if(combo.has(v)) continue;
-        if(contarDecena0(decenaDe0(v)) >= 4) continue;
-        if(crearia3Consecutivos0(v)) continue;
-        combo.add(v);
-      }
-
-      if(postInercia.decadaRebote && combo.size < cantidadNumeros){
-        const decena = postInercia.decadaRebote.decena;
-        const candidatosDecena = rangoNumerico(rango).filter(n => Math.ceil(n/10)===decena && !combo.has(n) && !crearia3Consecutivos0(n));
-        if(candidatosDecena.length > 0 && contarDecena0(decena) < 4) combo.add(candidatosDecena[Math.floor(Math.random()*candidatosDecena.length)]);
-      }
-
-      // Relleno por muestreo ponderado SIN reposición (mismo criterio de "más
-      // caliente = más probable", pero con orden variable en cada llamada).
-      const disponibles = rangoNumerico(rango).filter(n => !combo.has(n));
-      const disponiblesConPeso = disponibles.map(n => ({
-        numero: n,
-        pctAjustado: postInercia.rankingImanes.find(r=>r.numero===n)?.pctAjustado || 0.0001,
-      }));
-      const ordenPonderado = muestrearImanesPonderado(disponiblesConPeso, disponiblesConPeso.length);
-
-      const decenaDe = n => Math.ceil(n/10);
-      const contarDecena = d => [...combo].filter(x => decenaDe(x)===d).length;
-      // Evita crear un trío de números consecutivos (regla: máx. 2 seguidos),
-      // sin importar si "n" cae al inicio, en medio o al final de la racha.
-      const crearia3Consecutivos = n =>
-        (combo.has(n-1) && combo.has(n-2)) || (combo.has(n+1) && combo.has(n+2)) || (combo.has(n-1) && combo.has(n+1));
-
-      // FASE A -- Estructura Natural de la Máquina, cobertura de decenas: la
-      // semilla y los vecinos de afinidad pueden quedar concentrados en pocas
-      // decenas, así que antes del relleno "normal" se prioriza sumar al menos
-      // un número de cada decena todavía no representada (hasta cubrir 4),
-      // respetando siempre el tope de 4 por decena y el máximo de consecutivos.
-      for(const cand of ordenPonderado){
-        if(combo.size >= cantidadNumeros) break;
-        const decenasActuales = new Set([...combo].map(decenaDe));
-        if(decenasActuales.size >= 4) break;
-        const n = cand.numero;
-        if(combo.has(n)) continue;
-        const d = decenaDe(n);
-        if(decenasActuales.has(d)) continue; // en esta fase interesan decenas nuevas
-        if(contarDecena(d) >= 4) continue;
-        if(crearia3Consecutivos(n)) continue;
-        combo.add(n);
-      }
-
-      // FASE B -- relleno general: mismo criterio de siempre (más caliente = más
-      // probable), pero ya respetando también el tope de 4 por decena y el
-      // máximo de 2 consecutivos seguidos, además de la paridad objetivo.
-      for(const cand of ordenPonderado){
-        if(combo.size >= cantidadNumeros) break;
-        const n = cand.numero;
-        if(combo.has(n)) continue;
-        const d = decenaDe(n);
-        if(contarDecena(d) >= 4) continue;
-        if(crearia3Consecutivos(n)) continue;
-
-        const esPar = n % 2 === 0;
-        const paresActuales = [...combo].filter(x => x%2===0).length;
-        const faltan = cantidadNumeros - combo.size;
-        if(faltan > 1){
-          const paresIdeal = quiereParDominante ? Math.ceil(cantidadNumeros*0.6) : Math.floor(cantidadNumeros*0.4);
-          if(esPar && paresActuales >= paresIdeal) continue;
-          if(!esPar && (combo.size-paresActuales) >= (cantidadNumeros-paresIdeal)) continue;
-        }
-        combo.add(n);
-      }
-
-      const comboFinal = Array.from(combo).slice(0, cantidadNumeros);
-      if(comboFinal.length < cantidadNumeros) continue;
-      if(comboYaExisteEnHistorial(historial, comboFinal)) continue; // Regla de Oro: Cero Copias
-      if(!cumpleCoberturaGeneral(comboFinal, rango, cantidadNumeros)) continue;
-      if(!cumpleConsistenciaEstructural(comboFinal, postInercia)) continue; // Regla de Oro: Consistencia Estructural
-      // Estructura Natural de la Máquina: ≥4 decenas distintas, máx. 4 números por
-      // decena, máx. 2 consecutivos seguidos, balance par/impar entre 3/7 y 7/3, y
-      // rechazo de patrones rígidos (escaleras, saltos constantes). Antes solo se
-      // aplicaba en el flujo manual/Efecto Disparador -- faltaba aquí, en el motor
-      // que realmente genera las sugerencias del Kino hoy (Post-Inercia).
-      if(!cumpleReglasCobertura(comboFinal, rango)) continue;
-
-      return {
-        combo: comboFinal.sort((a,b)=>a-b), modo: 'post-inercia', semilla: semillaBase, vecinosApoyo,
-        decadaRebote: postInercia.decadaRebote, polaridad: postInercia.polaridad,
-      };
-    }
-    return null;
-  }
-
-  // --- Diversidad de sugerencias para sorteos de 4 números en adelante -------------
-  // Motivo: en sorteos con 4+ números, la "semilla" de imanes más fuertes es fija
-  // (ver generarCombinacionOptimizada), así que pedir 1 combinación óptima varias
-  // veces seguidas tiende a devolver siempre la misma. Los sorteos de 3 números o
-  // menos NO pasan por aquí: ya varían por muestreo ponderado y se dejan intactos.
-
-  // 1) Piscina de candidatas: se generan varias combinaciones válidas (cumplen las
-  // mismas Reglas de Oro de siempre) y se descartan las que salgan repetidas.
-  function generarPoolCandidatas(parametrosBase, cantidadDeseada=20, intentosMax=80){
-    const pool = [];
-    const vistos = new Set();
-    let intentos = 0;
-    while(pool.length < cantidadDeseada && intentos < intentosMax){
-      const r = generarCombinacionOptimizada(parametrosBase);
-      intentos++;
-      if(!r) continue;
-      const clave = r.combo.join(',');
-      if(vistos.has(clave)) continue;
-      vistos.add(clave);
-      pool.push(r);
-    }
-    return pool;
-  }
-
-  // 2) De la piscina, elegir N candidatas lo más distintas posible entre sí (parecido
-  // ≤ 60% cuando sea posible; si la piscina es chica, se relaja el límite en vez de
-  // fallar, para nunca dejar al usuario sin sugerencias).
-  function seleccionarDiversas(pool, cantidad, cantidadNumeros){
-    const solapamiento = (a, b) => {
-      const setB = new Set(b);
-      return a.filter(n => setB.has(n)).length / cantidadNumeros;
-    };
-    const restantes = pool.slice();
-    for(let i=restantes.length-1;i>0;i--){ const k=Math.floor(Math.random()*(i+1)); [restantes[i],restantes[k]]=[restantes[k],restantes[i]]; }
-
-    const elegidas = [];
-    while(elegidas.length < cantidad && restantes.length > 0){
-      let idx = -1;
-      for(const umbral of [0.6, 0.7, 0.8, 1.0]){
-        idx = restantes.findIndex(cand => elegidas.every(e => solapamiento(cand.combo, e.combo) <= umbral));
-        if(idx !== -1) break;
-      }
-      if(idx === -1) idx = 0;
-      elegidas.push(restantes[idx]);
-      restantes.splice(idx, 1);
-    }
-    return elegidas;
-  }
-
-  // 3) Registro local (este dispositivo) de combinaciones ya entregadas hoy para
-  // cada juego, para evitar repetir exactamente lo mismo el mismo día. No hay
-  // backend/Redis en este prototipo, así que se guarda en localStorage.
-  const CLAVE_LOCALSTORAGE_SUGERENCIAS = 'lotoAnalytics_sugerenciasEntregadas_v1';
-  function cargarRegistroSugerenciasEntregadas(){
-    try{
-      const crudo = localStorage.getItem(CLAVE_LOCALSTORAGE_SUGERENCIAS);
-      return crudo ? JSON.parse(crudo) : {};
-    } catch(err){ return {}; }
-  }
-  function guardarRegistroSugerenciasEntregadas(reg){
-    try{ localStorage.setItem(CLAVE_LOCALSTORAGE_SUGERENCIAS, JSON.stringify(reg)); }
-    catch(err){ console.warn('No se pudo guardar el registro de sugerencias entregadas:', err); }
-  }
-  function obtenerCombosEntregadosHoy(clave){
-    return cargarRegistroSugerenciasEntregadas()[clave] || [];
-  }
-  function registrarComboEntregado(clave, comboStr){
-    const reg = cargarRegistroSugerenciasEntregadas();
-    if(!reg[clave]) reg[clave] = [];
-    if(!reg[clave].includes(comboStr)) reg[clave].push(comboStr);
-    if(reg[clave].length > 200) reg[clave] = reg[clave].slice(-200); // evita crecer sin límite
-    guardarRegistroSugerenciasEntregadas(reg);
-  }
-
-  /** Orquesta las 4 fases. Reutilizable para cualquier lotería: solo cambia `historial` y `config`. */
-  function generarPorFrecuenciaPostInercia(historial, config, cantidadSugerencias=3, identificadorJuego='', senalExtra=null){
-    if(!historial || historial.length === 0) return { error: 'Historial vacío.' };
-    const sorteoBase = historial[historial.length - 1];
-    const radiografia = analizarUltimoSorteo(sorteoBase, config, historial);
-    const sorteosEspejo = buscarSorteosEspejo(radiografia, historial, true, 3);
-    if(sorteosEspejo.length === 0) return { error: 'No se encontraron sorteos espejo con similitud estructural suficiente.' };
-
-    const historialReciente10 = historial.slice(-10);
-    const postInercia = obtenerEfectoPostInercia(sorteosEspejo, historial, historialReciente10);
-    // senalExtra: señal opcional adicional para elegir la semilla (hoy: el
-    // "número reacción" del Efecto Disparador para el Kino). Si no se pasa,
-    // el comportamiento es idéntico al de antes.
-    const parametrosBase = { historial, config, radiografia, sorteosEspejo, postInercia, senalExtra };
-
-    let sugerencias;
-    if(config.cantidadNumeros <= 3){
-      // Sorteos de 3 números o menos: SIN CAMBIOS respecto al comportamiento
-      // original. Ya varían por muestreo ponderado dentro de generarCombinacionOptimizada.
-      sugerencias = [];
-      let intentosGlobales = 0;
-      while(sugerencias.length < cantidadSugerencias && intentosGlobales < cantidadSugerencias*4){
-        const r = generarCombinacionOptimizada(parametrosBase);
-        if(r) sugerencias.push(r);
-        intentosGlobales++;
-      }
+      return generarModoRespaldo(historial, config, maxIntentos);
     } else {
-      // Sorteos de 4 números en adelante: piscina de candidatas + selección diversa
-      // + registro local para no repetir exactamente lo mismo el mismo día.
-      const pool = generarPoolCandidatas(parametrosBase, Math.max(20, cantidadSugerencias*6));
-      if(pool.length === 0){
-        sugerencias = [];
-      } else {
-        const clave = identificadorJuego ? `${identificadorJuego}__${new Date().toISOString().slice(0,10)}` : null;
-        let poolDisponible = pool;
-        if(clave){
-          const yaEntregadas = obtenerCombosEntregadosHoy(clave);
-          const sinRepetir = pool.filter(c => !yaEntregadas.includes(c.combo.join(',')));
-          if(sinRepetir.length >= Math.min(cantidadSugerencias, pool.length)) poolDisponible = sinRepetir;
-        }
-        sugerencias = seleccionarDiversas(poolDisponible, cantidadSugerencias, config.cantidadNumeros);
-        if(clave) sugerencias.forEach(s => registrarComboEntregado(clave, s.combo.join(',')));
+      for(let intento=0; intento<maxIntentos; intento++){
+        let combo = construirEslabonCerrado([], cantidadNumeros, rango, 30);
+        if(!combo) continue;
+        const comboFinal = combo.combo;
+        if(comboYaExisteEnHistorial(historial, comboFinal)) continue;
+        return { combo: comboFinal, modo: 'eslabon' };
       }
+      return generarModoRespaldo(historial, config, maxIntentos);
     }
-
-    return { analisis: radiografia, espejos: sorteosEspejo, postInercia, sugerencias };
   }
 
-  // --- Integración con la interfaz. Genérica: recibe el historial y las frecuencias
-  // reales del juego seleccionado (Kino o Quiniela Nacional, ver JUEGOS_REALES); si no
-  // se pasan explícitamente, usa kinoHistorial por compatibilidad con llamadas previas. ---
-  function generarPorPostInercia(l, j, cantJugada, historialReal, frecuenciasReal){
-    const historialUsado = historialReal || kinoHistorial;
+  function generarPorPostInercia(l, j, cantJugada, historial, frecuenciasMap){
     const cont = document.getElementById('combos');
-    const config = { rango: j.rango, cantidadNumeros: cantJugada };
-    const identificadorJuego = `${l.nombre}__${j.nombre}`;
+    if(!historial || historial.length < 10){
+      cont.innerHTML = `<div class="hint">No hay suficiente historial real cargado para ${j.nombre}.</div>`;
+      return;
+    }
 
-    // Para el Kino, la Regla de Continuidad Secuencial Predictiva (Efecto
-    // Disparador) aporta una señal extra: qué números "reaccionan" con más
-    // frecuencia justo después de los bloques (parejas/tríos) más densos del
-    // último sorteo. Se suma como otra señal más al elegir la semilla del
-    // único motor automático (Post-Inercia) -- ya no hay un botón/selector
-    // aparte para esto, ambas señales trabajan juntas en un solo paso.
-    let senalDisparador = null;
-    if(j.nombre === "Súper Kino TV"){
-      const disparador = calcularEfectoDisparador();
-      if(disparador){
-        senalDisparador = {};
-        disparador.ranking.forEach(r => { if(r.pct > 0) senalDisparador[r.numero] = r.pct; });
+    const config = { rango: j.rango, cantidadNumeros: cantJugada };
+    const ultimoSorteo = historial[historial.length - 1];
+    const historialReciente10 = historial.slice(-10);
+
+    const radiografia = analizarUltimoSorteo(ultimoSorteo, config, historial);
+    const sorteosEspejo = buscarSorteosEspejo(radiografia, historial, true, 5);
+    const postInercia = obtenerEfectoPostInercia(sorteosEspejo, historial, historialReciente10);
+
+    let infoHtml = `<strong>Motor Autónomo: Frecuencia & Post-Inercia (${j.nombre})</strong><br>`;
+    infoHtml += `<span style="opacity:0.7;">Sorteo base analizado: ${ultimoSorteo.fecha} (Suma: ${radiografia.metricas.sumaTotal}, Paridad: ${radiografia.metricas.ratioParidad}).<br>`;
+    if(sorteosEspejo.length > 0){
+      infoHtml += `Espejo histórico más afín: ${sorteosEspejo[0].sorteoBase.fecha} (Similitud: ${(sorteosEspejo[0].puntaje*100).toFixed(0)}%).<br>`;
+    }
+    if(postInercia){
+      infoHtml += `Polaridad proyectada: ${postInercia.polaridad.dominante} (${(postInercia.polaridad.pct*100).toFixed(0)}%). `;
+      const topImanes = postInercia.rankingImanes.slice(0,4).map(r => `${r.numero.toString().padStart(2,'0')} [${r.temperatura.estado}]`).join(', ');
+      infoHtml += `Imanes principales: ${topImanes}.</span>`;
+    }
+    cont.innerHTML = `<div class="hint" style="margin-bottom:10px;">${infoHtml}</div>`;
+
+    const combinacionesGeneradas = [];
+    const maxIntentosGen = 300;
+
+    for(let i=0; i<3; i++){
+      const res = generarCombinacionOptimizada({
+        historial, config, radiografia, sorteosEspejo, postInercia, senalExtra: null, maxIntentos: maxIntentosGen
+      });
+      if(res){
+        if(!combinacionesGeneradas.some(c => c.every((val, idx) => val === res.combo[idx]))){
+          combinacionesGeneradas.push(res.combo);
+        }
       }
     }
 
-    const resultado = generarPorFrecuenciaPostInercia(historialUsado, config, 3, identificadorJuego, senalDisparador);
-
-    if(resultado.error){
-      cont.innerHTML = `<div class="hint">${resultado.error}</div>`;
+    if(combinacionesGeneradas.length === 0){
+      cont.innerHTML += `<div class="hint" style="color:var(--warn);">No se pudieron generar combinaciones únicas bajo los filtros estrictos actuales. Intente nuevamente.</div>`;
       return;
     }
 
-    const { analisis, espejos, postInercia, sugerencias } = resultado;
-    const mejorPuntaje = espejos.length ? espejos[0].puntaje : 0;
-    const modoRespaldo = mejorPuntaje < 0.5 || !postInercia;
-
-    // El análisis completo (radiografía, sorteos espejo, efecto rebote, polaridad,
-    // números imán) se sigue calculando igual que antes -- solo que ya no se
-    // imprime en la interfaz como texto. El usuario solo debe ver las sugerencias.
-    let encabezado = `<strong>Frecuencia, Post-Inercia y Control de Temperatura</strong>`;
-    encabezado += `<br><span style="opacity:0.7;">Radiografía del último sorteo: paridad ${analisis.metricas.ratioParidad}, suma total ${analisis.metricas.sumaTotal} `;
-    encabezado += `(rango estándar esperado: ${analisis.sumaEstandar.min}-${analisis.sumaEstandar.max}), `;
-    encabezado += `décadas vacías: ${analisis.metricas.decenasVacias.length ? analisis.metricas.decenasVacias.join(', ') : 'ninguna'}.<br>`;
-
-    const espejosTexto = espejos.map(e => `${(e.puntaje*100).toFixed(0)}% (sorteo #${e.idx+1}, peso reciencia ${e.peso.toFixed(2)})`).join(' · ');
-    encabezado += `Sorteos espejo (parentesco, ponderado por reciencia): ${espejosTexto}.<br>`;
-
-    if(modoRespaldo){
-      encabezado += `<strong style="color:var(--rosa,#ec4899);">Umbral de Confianza activado</strong>: el último sorteo es atípico frente al historial (mejor parecido ${(mejorPuntaje*100).toFixed(0)}% &lt; 50%). No se fuerza ningún patrón — se usa el Modo de Respaldo Lógico (paridad equilibrada y suma dentro del rango estándar).</span>`;
-    } else {
-      const topImanes = postInercia.rankingImanes.slice(0,8).map(r => `${r.numero.toString().padStart(2,'0')} (${(r.pct*100).toFixed(0)}%${r.temperatura ? ', '+r.temperatura.estado : ''})`).join(', ');
-      if(postInercia.decadaRebote) encabezado += `Efecto rebote de década: la década ${postInercia.decadaRebote.decena} se reactivó en ${(postInercia.decadaRebote.pct*100).toFixed(0)}% de los casos.<br>`;
-      encabezado += `Polaridad dominante proyectada: ${postInercia.polaridad.dominante} (${(postInercia.polaridad.pct*100).toFixed(0)}%).<br>`;
-      encabezado += `Números imán (top, con temperatura de los últimos 10 sorteos): ${topImanes}.</span>`;
-    }
-    cont.innerHTML = ''; // se calcula 'encabezado' arriba (útil para depurar en consola si hace falta) pero no se pinta en la interfaz
-
-    if(sugerencias.length === 0){
-      cont.innerHTML += `<div class="hint">No se logró armar una combinación que cumpla las Reglas de Oro (Cero Copias, Consistencia Estructural) con este historial. Intenta de nuevo.</div>`;
-      return;
-    }
-
-    sugerencias.forEach((s, i) => {
-      const resaltar = s.semilla || [];
+    combinacionesGeneradas.forEach((combo, i) => {
       const div = document.createElement('div');
       div.className = 'combo';
       div.innerHTML = `
         <div class="idx">${i+1}</div>
         <div class="balls">
-          ${s.combo.map(n=>`<div class="ball ${resaltar.includes(n)?'anchor':''}">${n.toString().padStart(2,'0')}</div>`).join('')}
+          ${combo.map(n => `<div class="ball">${n.toString().padStart(2,'0')}</div>`).join('')}
         </div>
       `;
       cont.appendChild(div);
@@ -2548,30 +1852,33 @@
   }
 
   function pintarFrecuenciaJuego(orden){
-    const nombreJuego = juegoActual && loterias.find(x=>x.nombre===juegoActual.loteria).juegos[juegoActual.indice].nombre;
-    const real = nombreJuego ? datosRealesDe(nombreJuego) : null;
+    if(!juegoActual) return;
+    const l = loterias.find(x => x.nombre === juegoActual.loteria);
+    const j = l.juegos[juegoActual.indice];
+    const real = datosRealesDe(j.nombre);
     const fuente = real ? real.frecuencias() : frecuencias;
-    const [minR, maxR] = real ? real.rango : [0, 99];
+    const [min,max] = j.rango;
 
     const entradas = Object.entries(fuente)
       .map(([k,v]) => [Number(k), v])
-      .filter(([num]) => num >= minR && num <= maxR)
-      .sort((a,b)=> orden==='desc' ? b[1]-a[1] : a[1]-b[1])
-      .slice(0,10);
-    const max = Math.max(...entradas.map(e=>e[1]));
-    const freqJuego = document.getElementById('freq-juego-lista');
-    freqJuego.innerHTML = (real ? `<div class="hint" style="margin-bottom:10px;">Calculado sobre ${real.historial().length} sorteos reales proporcionados.</div>` : '') + entradas.map(([num,veces],i)=>`
+      .filter(([num]) => num >= min && num <= max)
+      .sort((a,b) => orden==='desc' ? b[1]-a[1] : a[1]-b[1]);
+
+    const cont = document.getElementById('freq-juego-lista');
+    if(entradas.length === 0){ cont.innerHTML = '<div class="hint">Sin datos.</div>'; return; }
+    const maxVal = Math.max(...entradas.map(e=>e[1]));
+    cont.innerHTML = entradas.slice(0,10).map(([num,veces], i) => `
       <div class="freq-row">
         <div class="freq-rank">${i+1}</div>
         <div class="freq-ball">${Number(num).toString().padStart(2,'0')}</div>
-        <div class="freq-bar-wrap"><div class="freq-bar" style="width:${(veces/max*100).toFixed(0)}%"></div></div>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:${(veces/maxVal*100).toFixed(0)}%"></div></div>
         <div class="freq-count">${veces} veces</div>
       </div>
     `).join('');
   }
 
   function ordenarFreqJuego(orden, btn){
-    btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('#juego-detail .freq-toggle button').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     pintarFrecuenciaJuego(orden);
   }
@@ -2581,84 +1888,16 @@
     document.getElementById('lot-detail').classList.add('show');
   }
 
-  /* ---------- SISTEMA DE ACTUALIZACIÓN AUTOMÁTICA ---------- */
-  // Estructura lista para conectarse a un backend/API/webhook real que publique los
-  // sorteos en cuanto salgan. Hoy el prototipo no tiene backend propio, así que
-  // ENDPOINT_SORTEOS queda en null: la función revisa, no encuentra endpoint, y no
-  // hace nada — sin romper nada. En cuanto haya una API real, solo hay que poner la
-  // URL aquí y esta función empieza a traer los sorteos del día automáticamente.
-  //
-  // Conectado directamente a la API REST automática de Supabase (PostgREST),
-  // leyendo la tabla "sorteos" que llena backend-todo-en-uno.js.
-  //
-  // SUPABASE_ANON_KEY es la llave "publicable" (segura para el navegador):
-  // solo permite lo que las políticas de Row Level Security de la tabla
-  // autoricen (en este caso, únicamente lectura). NUNCA poner aquí la llave
-  // "secreta"/"service_role" — esa da acceso total a la base de datos.
-  const SUPABASE_URL = "https://vrqzpuikwsopjpehusgp.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_TS32w4W9EW8Jp7YjqFAalw_oxldUa7i";
-  const ENDPOINT_SORTEOS = SUPABASE_URL + "/rest/v1/sorteos?select=loteria,juego,fecha,numeros&order=fecha.desc&limit=20";
-  const INTERVALO_ACTUALIZACION_MS = 60 * 1000; // revisa cada 60 segundos
-
-  async function consultarSorteosDelDia(){
-    try{
-      const resp = await fetch(ENDPOINT_SORTEOS, {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: "Bearer " + SUPABASE_ANON_KEY
-        }
-      });
-      if(!resp.ok) throw new Error('HTTP ' + resp.status);
-      const nuevos = await resp.json();
-      aplicarNuevosSorteos(nuevos);
-    } catch(err){
-      console.warn('No se pudo actualizar sorteos automáticamente:', err);
-    }
-  }
-
-  // Inserta solo los sorteos que todavía no estén en el feed (evita duplicados si
-  // el backend reenvía el mismo sorteo en varias consultas), y refresca las vistas
-  // que dependan de esos datos (el feed principal y, si está abierta, la pantalla
-  // del juego que el usuario esté viendo en ese momento).
-  // Cada sorteo que traiga el backend/robot (fecha en formato ISO 'YYYY-MM-DD') se
-  // convierte al formato de fecha del feed, se guarda en localStorage (para que
-  // sobreviva a cerrar la página) y, si es del Kino, se integra al historial real
-  // que usa el motor de recomendaciones — automáticamente, sin intervención manual.
-  function aplicarNuevosSorteos(nuevos){
-    if(!Array.isArray(nuevos) || nuevos.length === 0) return;
-    let huboCambios = false;
-    nuevos.forEach(s => {
-      if(!s.loteria || !s.juego || !s.fecha || !Array.isArray(s.numeros)) return;
-
-      const fechaTexto = formatearFechaTexto(parsearFechaISO(s.fecha));
-      const yaExiste = resultadosRecientes.some(r => r.loteria === s.loteria && r.fecha === fechaTexto);
-      if(!yaExiste){
-        resultadosRecientes.unshift({ loteria: s.loteria, fecha: fechaTexto, numeros: s.numeros });
-        huboCambios = true;
-      }
-
-      const sorteoLocal = { loteria: s.loteria, juego: s.juego, fecha: s.fecha, numeros: s.numeros, hora_publicacion: new Date().toISOString() };
-      guardarSorteoLocal(sorteoLocal);
-      if(s.loteria === "Leidsa" && s.juego === "Súper Kino TV") integrarSorteoLocalEnKinoHistorial(sorteoLocal);
-      if(s.loteria === "Lotería Nacional" && s.juego === "Quiniela Nacional") integrarSorteoLocalEnNacionalHistorial(sorteoLocal);
-    });
-    if(!huboCambios) return;
+  // Inicialización general al cargar la página
+  window.addEventListener('DOMContentLoaded', () => {
+    integrarSorteosLocalesAlCargar();
+    recalcularEstadisticasKino();
+    recalcularEstadisticasNacional();
     pintarFeed();
-    if(juegoActual && document.getElementById('juego-detail').classList.contains('show')){
-      abrirJuego(juegoActual.loteria, juegoActual.indice);
-    }
-  }
-
-  /* ---------- INIT ---------- */
-  integrarSorteosLocalesAlCargar();   // trae a cada historial real lo guardado en sesiones anteriores
-  recalcularEstadisticasKino();       // cálculo inicial de frecuencias/afinidad del Kino (incluye lo local ya integrado)
-  recalcularEstadisticasNacional();   // cálculo inicial de calientes/fríos de Quiniela Nacional (ídem)
-  pintarFeed();
-  poblarSelectoresFreq();
-  pintarListaLoterias();
-  poblarSelectoresRec();
-  consultarSorteosDelDia();
-  setInterval(consultarSorteosDelDia, INTERVALO_ACTUALIZACION_MS);
+    poblarSelectoresFreq();
+    poblarSelectoresRec();
+    pintarListaLoterias();
+  });
 </script>
 </body>
 </html>
