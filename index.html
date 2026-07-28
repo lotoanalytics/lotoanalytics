@@ -1,0 +1,2439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LotoAnalytics.com</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Exo+2:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+  :root{
+    --bg-deep:#05061c;
+    --bg-panel:rgba(16,20,46,0.6);
+    --bg-panel-solid:#0e1230;
+    --cyan:#22d3ee;
+    --purple:#a855f7;
+    --pink:#ec4899;
+    --grad: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+    --text:#e9ecff;
+    --text-dim:#8b93c4;
+    --warn:#fb4570;
+    --line: rgba(120,150,255,0.28);
+    --line-strong: rgba(150,180,255,0.5);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--bg-deep);}
+  body{
+    margin:0;
+    background:var(--bg-deep);
+    color:var(--text);
+    font-family:'Exo 2', sans-serif;
+    min-height:100vh;
+    padding-bottom:80px;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* Fondo estelar ambiental, fijo, decorativo */
+  .starfield{
+    position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(1.5px 1.5px at 10% 15%, #fff 100%, transparent 0),
+      radial-gradient(1px 1px at 25% 40%, #fff 100%, transparent 0),
+      radial-gradient(1.5px 1.5px at 60% 10%, #fff 100%, transparent 0),
+      radial-gradient(1px 1px at 80% 25%, #fff 100%, transparent 0),
+      radial-gradient(1.5px 1.5px at 40% 65%, #fff 100%, transparent 0),
+      radial-gradient(1px 1px at 90% 55%, #fff 100%, transparent 0),
+      radial-gradient(1.5px 1.5px at 15% 80%, #fff 100%, transparent 0),
+      radial-gradient(1px 1px at 70% 85%, #fff 100%, transparent 0),
+      radial-gradient(1.5px 1.5px at 50% 95%, #fff 100%, transparent 0),
+      radial-gradient(1px 1px at 5% 55%, #fff 100%, transparent 0),
+      radial-gradient(650px 650px at 12% 8%, rgba(168,85,247,0.20), transparent 60%),
+      radial-gradient(600px 600px at 90% 15%, rgba(34,211,238,0.16), transparent 60%),
+      radial-gradient(700px 700px at 50% 100%, rgba(236,72,153,0.14), transparent 60%),
+      var(--bg-deep);
+    background-repeat:no-repeat;
+  }
+
+  .wrap{max-width:520px;margin:0 auto; padding:20px 16px;}
+
+  /* HEADER */
+  header{
+    border-bottom:1px solid var(--line);
+    padding-bottom:16px;
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Orbitron', sans-serif;
+    font-weight:800;
+    font-size:1.6rem;
+    margin:0;
+    letter-spacing:0.01em;
+    background:var(--grad);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 0 14px rgba(168,85,247,0.35));
+  }
+  .sub{font-family:'Share Tech Mono', monospace; font-size:0.72rem; color:var(--text-dim); margin-top:4px; letter-spacing:0.03em;}
+
+  /* NAV TABS */
+  nav{
+    display:flex;
+    gap:6px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:22px;
+    background:var(--bg-panel);
+    backdrop-filter:blur(10px);
+    padding:4px;
+  }
+  nav button{
+    flex:1;
+    padding:10px 4px;
+    background:transparent;
+    border:none;
+    border-radius:7px;
+    font-family:'Exo 2', sans-serif;
+    font-weight:600;
+    font-size:0.62rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    cursor:pointer;
+    color:var(--text-dim);
+    transition:all .2s ease;
+  }
+  nav button.active{
+    background:var(--grad);
+    color:#fff;
+    box-shadow:0 0 18px rgba(168,85,247,0.55), 0 0 4px rgba(34,211,238,0.6), 0 0 12px rgba(236,72,153,0.4);
+  }
+
+  section{display:none;}
+  section.active{display:block;}
+
+  h2.section-title{
+    font-family:'Orbitron', sans-serif;
+    font-weight:700;
+    font-size:0.92rem;
+    letter-spacing:0.02em;
+    margin:0 0 14px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:8px;
+    color:var(--text);
+  }
+
+  /* RESULTADOS FEED */
+  .loteria-group{margin-bottom:24px;}
+  .loteria-group-title{
+    font-family:'Orbitron', sans-serif;
+    font-weight:700;
+    font-size:0.95rem;
+    letter-spacing:0.02em;
+    margin:0 0 10px;
+    padding-bottom:7px;
+    border-bottom:1px solid var(--line);
+    color:var(--text);
+  }
+  .juego-nombre{color:var(--cyan); font-weight:600; text-shadow:0 0 8px rgba(34,211,238,0.5);}
+  .result-card{
+    border:1px solid var(--line);
+    background:var(--bg-panel);
+    backdrop-filter:blur(8px);
+    padding:12px 14px;
+    margin-bottom:10px;
+    border-radius:10px;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.02) inset;
+  }
+  .result-top{
+    display:flex;
+    justify-content:space-between;
+    font-family:'Share Tech Mono', monospace;
+    font-size:0.66rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--text-dim);
+    margin-bottom:8px;
+  }
+  .result-top .loteria, .result-top .juego-nombre{color:var(--cyan); font-weight:600; text-shadow:0 0 8px rgba(34,211,238,0.5);}
+  .balls{display:flex; gap:6px; flex-wrap:wrap;}
+  .ball{
+    width:32px;height:32px;
+    border:1.5px solid var(--line-strong);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Share Tech Mono', monospace;
+    font-size:0.78rem;
+    background:rgba(10,14,36,0.8);
+    color:var(--text);
+    box-shadow:0 0 8px rgba(56,189,248,0.18);
+    transition:all .2s ease;
+  }
+  /* Sorteo del día actual: mismo tratamiento neón que un elemento "activo" (ej. toggle de frecuencias) */
+  .ball.hoy, .ball-today{
+    background:var(--grad);
+    color:#fff;
+    border-color:transparent;
+    font-weight:700;
+    box-shadow:0 0 14px rgba(168,85,247,0.55), 0 0 4px rgba(34,211,238,0.6), 0 0 10px rgba(236,72,153,0.4);
+  }
+  .etiqueta-hoy{
+    font-family:'Share Tech Mono', monospace;
+    color:var(--cyan);
+    font-weight:700;
+    text-shadow:0 0 8px rgba(34,211,238,0.6);
+    margin-left:6px;
+  }
+
+  /* FRECUENCIAS */
+  .freq-list{border:1px solid var(--line); background:var(--bg-panel); backdrop-filter:blur(8px); border-radius:10px; overflow:hidden;}
+  .freq-row{
+    display:flex;
+    align-items:center;
+    padding:10px 14px;
+    border-bottom:1px solid rgba(120,150,255,0.14);
+    gap:10px;
+  }
+  .freq-row:last-child{border-bottom:none;}
+  .freq-rank{font-family:'Orbitron', sans-serif; font-weight:700; font-size:0.85rem; width:24px; color:var(--purple);}
+  .freq-ball{
+    width:34px;height:34px;
+    border:1.5px solid var(--line-strong);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Share Tech Mono', monospace;
+    font-size:0.78rem;
+    background:var(--grad);
+    color:#fff;
+    box-shadow:0 0 10px rgba(168,85,247,0.5);
+  }
+  .freq-bar-wrap{flex:1; background:rgba(120,150,255,0.12); height:8px; border-radius:4px; overflow:hidden;}
+  .freq-bar{height:100%; background:var(--grad); box-shadow:0 0 8px rgba(34,211,238,0.6);}
+  .freq-count{font-family:'Share Tech Mono', monospace; font-size:0.66rem; color:var(--text-dim); width:auto; white-space:nowrap; text-align:right;}
+  .freq-toggle{
+    display:flex; gap:6px; margin-bottom:14px; border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:0.66rem; background:var(--bg-panel); padding:4px;
+  }
+  .freq-toggle button{flex:1; padding:8px; border:none; border-radius:7px; background:transparent; color:var(--text-dim); cursor:pointer; font-family:'Exo 2',sans-serif; font-weight:600; transition:all .2s ease;}
+  .freq-toggle button.active{background:var(--grad); color:#fff; box-shadow:0 0 12px rgba(168,85,247,0.5);}
+
+  /* FORM ELEMENTS */
+  label{
+    display:block;
+    font-family:'Share Tech Mono', monospace;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:6px;
+    color:var(--cyan);
+  }
+  input[type=text]{
+    width:100%;
+    font-family:'Share Tech Mono', monospace;
+    font-size:1rem;
+    padding:11px 13px;
+    border:1.5px solid var(--line-strong);
+    background:rgba(10,14,36,0.7);
+    color:var(--text);
+    border-radius:9px;
+  }
+  input[type=text]:focus{outline:none; border-color:var(--cyan); box-shadow:0 0 0 3px rgba(34,211,238,0.25);}
+  input[type=date]{
+    width:100%; font-family:'Share Tech Mono', monospace; padding:9px; border:1.5px solid var(--line-strong);
+    border-radius:9px; background:rgba(10,14,36,0.7); color:var(--text);
+  }
+  select{
+    width:100%;
+    font-family:'Exo 2', sans-serif;
+    font-weight:600;
+    font-size:0.9rem;
+    padding:10px 12px;
+    border:1.5px solid var(--line-strong);
+    background:rgba(10,14,36,0.7);
+    border-radius:9px;
+    color:var(--text);
+    appearance:none;
+    -webkit-appearance:none;
+  }
+  .hint{font-family:'Share Tech Mono', monospace; font-size:0.66rem; color:var(--text-dim); margin-top:6px; line-height:1.5;}
+
+  /* Píldoras de vista previa: cada número escrito se muestra como esfera independiente */
+  .numero-pildoras{
+    display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; min-height:0;
+  }
+  .numero-pildora{
+    width:32px; height:32px;
+    border:1.5px solid var(--cyan);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Share Tech Mono', monospace;
+    font-size:0.72rem;
+    color:var(--cyan);
+    background:rgba(34,211,238,0.08);
+    box-shadow:0 0 8px rgba(34,211,238,0.35);
+    animation:pildora-in .15s ease-out;
+  }
+  @keyframes pildora-in{
+    from{ transform:scale(0.5); opacity:0; }
+    to{ transform:scale(1); opacity:1; }
+  }
+
+  button.primary{
+    margin-top:14px;
+    width:100%;
+    padding:14px;
+    background:var(--grad);
+    color:#fff;
+    border:none;
+    font-family:'Exo 2', sans-serif;
+    font-weight:700;
+    font-size:0.82rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    border-radius:10px;
+    cursor:pointer;
+    box-shadow:0 0 20px rgba(168,85,247,0.5), 0 0 6px rgba(34,211,238,0.6), 0 0 12px rgba(236,72,153,0.4);
+    position:relative;
+    transition:box-shadow .2s ease;
+  }
+  button.primary:active{transform:translateY(1px);}
+  button.primary.cargando{
+    box-shadow:0 0 26px rgba(236,72,153,0.7), 0 0 14px rgba(34,211,238,0.7);
+    cursor:wait;
+  }
+  .spinner-inline{
+    display:inline-block; width:14px; height:14px; margin-right:8px;
+    border:2px solid rgba(255,255,255,0.35); border-top-color:#fff;
+    border-radius:50%; vertical-align:-2px;
+    animation:girar .6s linear infinite;
+  }
+  @keyframes girar{ to{ transform:rotate(360deg); } }
+
+  /* SUGERENCIAS */
+  .combo{
+    display:flex; align-items:center; gap:12px;
+    border:1px solid var(--line); background:var(--bg-panel); backdrop-filter:blur(8px);
+    padding:11px 13px; margin-bottom:9px; border-radius:10px; flex-wrap:wrap;
+  }
+  .combo .idx{font-family:'Orbitron', sans-serif; font-weight:800; font-size:1.1rem; color:var(--pink); width:20px; text-shadow:0 0 10px rgba(236,72,153,0.6);}
+  .ball.anchor{background:var(--grad); color:#fff; border-color:transparent; box-shadow:0 0 12px rgba(168,85,247,0.6);}
+
+  .disclaimer{
+    margin-top:20px;
+    border:1.5px dashed var(--warn);
+    padding:13px;
+    font-family:'Share Tech Mono', monospace;
+    font-size:0.7rem;
+    line-height:1.6;
+    color:#ffb3c6;
+    background:rgba(251,69,112,0.08);
+    border-radius:10px;
+    box-shadow:0 0 16px rgba(251,69,112,0.15);
+  }
+  .disclaimer strong{
+    display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.05em;
+    font-family:'Orbitron', sans-serif; color:var(--warn);
+  }
+
+  /* LOTERIAS LIST */
+  .lot-item{
+    display:flex; justify-content:space-between; align-items:center;
+    border:1px solid var(--line); background:var(--bg-panel); backdrop-filter:blur(8px);
+    padding:11px 14px; margin-bottom:9px; border-radius:10px; cursor:pointer;
+  }
+  .lot-item .left{display:flex; align-items:center; gap:12px;}
+  .lot-badge{
+    width:40px;height:40px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Orbitron', sans-serif; font-weight:700; font-size:0.82rem;
+    color:#fff;
+    flex-shrink:0;
+    box-shadow:0 0 12px rgba(0,0,0,0.4), 0 0 10px currentColor;
+  }
+  .lot-item .name{font-family:'Exo 2', sans-serif; font-weight:600; font-size:1rem; color:var(--text);}
+  .lot-item .arrow{font-size:1rem; color:var(--cyan); text-shadow:0 0 8px rgba(34,211,238,0.7);}
+  .lot-detail-title-row{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+  .lot-detail-title-row .lot-badge{width:44px;height:44px;font-size:0.9rem;}
+  .lot-detail{display:none; margin-top:16px;}
+  .lot-detail.show{display:block;}
+  .back-btn{
+    background:none; border:none; font-family:'Exo 2',sans-serif; font-weight:600; font-size:0.75rem;
+    color:var(--cyan); text-decoration:underline; cursor:pointer; padding:0; margin-bottom:14px;
+  }
+  .calendar-box{
+    border:1px solid var(--line); background:var(--bg-panel); backdrop-filter:blur(8px); padding:14px; border-radius:10px; margin-bottom:16px;
+  }
+  .draw-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 0; border-bottom:1px solid rgba(120,150,255,0.14); cursor:pointer;
+  }
+  .draw-row:last-child{border-bottom:none;}
+  .draw-date{font-family:'Share Tech Mono', monospace; font-size:0.7rem; color:var(--text-dim);}
+
+  .juego-card{
+    border:1px solid var(--line); background:var(--bg-panel); backdrop-filter:blur(8px);
+    padding:10px 13px; margin-bottom:8px; border-radius:10px;
+  }
+  .juego-nombre{font-family:'Exo 2', sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:3px; color:var(--text);}
+  .juego-desc{font-family:'Share Tech Mono', monospace; font-size:0.66rem; color:var(--text-dim); line-height:1.5;}
+
+  .leyenda-extras{display:flex; gap:14px; margin-bottom:14px; flex-wrap:wrap;}
+  .leyenda-item{display:flex; align-items:center; gap:6px; font-family:'Share Tech Mono', monospace; font-size:0.66rem; color:var(--text-dim);}
+  .leyenda-dot{width:12px;height:12px;border-radius:50%; display:inline-block; box-shadow:0 0 8px currentColor;}
+</style>
+</head>
+<body>
+<div class="starfield" aria-hidden="true"></div>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>LotoAnalytics.com</h1>
+      <div class="sub">Motor de Análisis y Estadística</div>
+    </div>
+  </header>
+
+  <nav>
+    <button class="active" onclick="mostrar('inicio', this)">Resultados</button>
+    <button onclick="mostrar('frecuencias', this)">Frecuencias</button>
+    <button onclick="mostrar('recomendaciones', this)">Sugerencias</button>
+    <button onclick="mostrar('loterias', this)">Loterías</button>
+  </nav>
+
+  <!-- RESULTADOS -->
+  <section id="inicio" class="active">
+    <h2 class="section-title">Últimos resultados</h2>
+    <div id="feed-resultados"></div>
+  </section>
+
+  <!-- FRECUENCIAS -->
+  <section id="frecuencias">
+    <h2 class="section-title">Números más frecuentes</h2>
+
+    <label for="freq-loteria">Lotería a consultar</label>
+    <select id="freq-loteria" onchange="cambiarLoteriaFreq()"></select>
+
+    <label for="freq-juego" style="margin-top:12px;">Tipo de juego</label>
+    <select id="freq-juego" onchange="cambiarJuegoFreq()"></select>
+
+    <div class="freq-toggle" style="margin-top:14px;">
+      <button class="active" onclick="ordenarFreq('desc', this)">Más salidos primero</button>
+      <button onclick="ordenarFreq('asc', this)">Menos salidos primero</button>
+    </div>
+    <div id="freq-fuente-nota" class="hint" style="margin-bottom:10px;"></div>
+    <div class="freq-list" id="lista-frecuencias"></div>
+  </section>
+
+  <!-- RECOMENDACIONES -->
+  <section id="recomendaciones">
+    <h2 class="section-title">Mis recomendaciones</h2>
+
+    <label for="rec-loteria">Lotería a analizar</label>
+    <select id="rec-loteria" onchange="cambiarLoteriaRec()"></select>
+
+    <label for="rec-juego" style="margin-top:12px;">Tipo de juego</label>
+    <select id="rec-juego" onchange="cambiarJuegoRec()"></select>
+
+    <button class="primary" id="btn-sugerencias" onclick="generar()" style="margin-top:16px;">Ver sugerencias</button>
+    <div id="combos" style="margin-top:18px;"></div>
+    <div class="disclaimer">
+      <strong>Aviso</strong>
+      Contenido informativo y de entretenimiento. Los sorteos son eventos independientes y aleatorios: ningún sistema puede predecir ni garantizar resultados futuros.
+    </div>
+  </section>
+
+  <!-- LOTERIAS -->
+  <section id="loterias">
+    <div id="lot-lista">
+      <h2 class="section-title">Elige una lotería</h2>
+      <div id="lista-loterias"></div>
+    </div>
+
+    <div id="lot-detail" class="lot-detail">
+      <button class="back-btn" onclick="volverListaLoterias()">&larr; volver a loterías</button>
+      <div class="lot-detail-title-row">
+        <div class="lot-badge" id="lot-detail-badge">LN</div>
+        <div>
+          <h2 class="section-title" id="lot-detail-titulo" style="border:none; padding:0; margin:0;">Lotería</h2>
+          <div style="font-size:0.62rem; opacity:0.55; margin-top:2px;">Logo oficial: pendiente de autorización de la marca</div>
+        </div>
+      </div>
+
+      <h2 class="section-title" style="font-size:0.9rem;">Tipos de juego</h2>
+      <div id="lista-juegos" style="margin-bottom:20px;"></div>
+    </div>
+
+    <div id="juego-detail" class="lot-detail">
+      <button class="back-btn" onclick="volverALoteria()">&larr; volver a <span id="juego-detail-lot-nombre"></span></button>
+      <h2 class="section-title" id="juego-detail-titulo" style="font-size:1rem;">Juego</h2>
+      <p class="juego-desc" id="juego-detail-desc" style="margin-bottom:8px;"></p>
+      <div class="leyenda-extras" id="leyenda-extras" style="display:none;"></div>
+
+      <div class="calendar-box">
+        <label for="fecha-busqueda">Buscar sorteo por fecha</label>
+        <input type="date" id="fecha-busqueda" onchange="buscarSorteoPorFecha()">
+        <div id="resultado-busqueda-fecha" style="margin-top:8px;"></div>
+      </div>
+
+      <h2 class="section-title" style="font-size:0.9rem; margin-top:14px;">Últimos 5 sorteos</h2>
+      <div id="ultimos-sorteos"></div>
+
+      <h2 class="section-title" style="font-size:0.9rem; margin-top:18px;">Números más frecuentes</h2>
+      <div class="freq-toggle">
+        <button class="active" onclick="ordenarFreqJuego('desc', this)">Más frecuentes primero</button>
+        <button onclick="ordenarFreqJuego('asc', this)">Menos frecuentes primero</button>
+      </div>
+      <div class="freq-list" id="freq-juego-lista"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  /* ---------- DATOS DE EJEMPLO (mock) ---------- */
+  // Historial real de Súper Kino TV proporcionado por el usuario (118 sorteos, ene-may 2026)
+  // Historial real de Súper Kino TV. Antes estos datos venían escritos aquí mismo;
+  // ahora se descargan automáticamente desde Supabase al cargar la página
+  // (ver cargarHistorialCompletoDesdeSupabase(), más abajo) y se guardan en esta
+  // misma variable, para que el motor de análisis siga funcionando exactamente igual.
+  const kinoHistorial = [];
+
+  // Historial real de Quiniela Nacional (Lotería Nacional) proporcionado por el usuario
+  // (199 sorteos, 28-12-2025 al 26-07-2026). Cada sorteo trae 3 números (1ra, 2da, 3ra
+  // posición). Se integra al mismo motor genérico de Post-Inercia que usa el Kino,
+  // pasando su propia config (rango 00-99, 3 números).
+  // Historial real de Quiniela Nacional (Lotería Nacional). Igual que kinoHistorial,
+  // se descarga desde Supabase al cargar la página y se guarda en esta misma variable.
+  const nacionalHistorial = [];
+
+  const loterias = [
+    {nombre:"Lotería Nacional", inicial:"LN", color:"#a6192e",
+      juegos:[
+        {nombre:"Gana Más", desc:"Quiniela tradicional: 3 números (1ra, 2da y 3ra posición), rango 00-99.", bolos:3, rango:[0,99]},
+        {nombre:"Quiniela Nacional", desc:"Sorteo diario, 3 números, rango 00-99. Historial real cargado (199 sorteos).", bolos:3, rango:[0,99]},
+        {nombre:"Juega + Pega +", desc:"Modalidad electrónica, 3 números, rango 00-99.", bolos:3, rango:[0,99]},
+      ]},
+    {nombre:"Leidsa", inicial:"LE", color:"#0057a3",
+      juegos:[
+        {nombre:"Loto Leidsa (+ Más/Súper Más)", desc:"6 números de 40 bolas (01-40), más bola Más (1-12) y bola Súper Más (1-15) de tómbolas aparte.", bolos:6, rango:[1,40],
+          extras:[{nombre:"Más", color:"#c0392b", rango:[1,12]}, {nombre:"Súper Más", color:"#2266b0", rango:[1,15]}]},
+        {nombre:"Loto Pool", desc:"5 números de 31 bolas.", bolos:5, rango:[1,31]},
+        {nombre:"Pega 3 Más", desc:"3 números, rango 0-50.", bolos:3, rango:[0,50]},
+        {nombre:"Quiniela Leidsa / Palé", desc:"3 números, rango 00-99.", bolos:3, rango:[0,99]},
+        {nombre:"Súper Kino TV", desc:"Se sortean 20 números de una tómbola del 01 al 80, pero el boleto solo juega una combinación de 10 números.", bolos:20, rango:[1,80], jugada:10, reglasCobertura:true},
+      ]},
+    {nombre:"Loteka", inicial:"LK", color:"#1e7a3d",
+      juegos:[
+        {nombre:"Quiniela Loteka", desc:"3 números (1ra, 2da, 3ra posición), rango 00-99.", bolos:3, rango:[0,99]},
+        {nombre:"Mega Chances", desc:"5 números, rango 00-99.", bolos:5, rango:[0,99]},
+        {nombre:"Mega Chances Repartidera", desc:"5 números, ligado al resultado de Mega Chances.", bolos:5, rango:[0,99]},
+        {nombre:"Toca 3", desc:"3 números, rango 00-99.", bolos:3, rango:[0,99]},
+        {nombre:"Mega Lotto", desc:"6 números de 49 bolas, sorteo semanal.", bolos:6, rango:[1,49]},
+      ]},
+    {nombre:"Lotería Real", inicial:"LR", color:"#1b3a5c",
+      juegos:[
+        {nombre:"Quiniela", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de Lotería Real.", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Palé", desc:"Juega 2 números (00-99); ganas si ambos salen entre los 3 sorteados.", bolos:3, rango:[0,99], jugada:2},
+        {nombre:"Tripleta", desc:"Juega los 3 números (00-99) del sorteo completo.", bolos:3, rango:[0,99], jugada:3},
+        {nombre:"Loto Real", desc:"6 números de tómbola tipo loto, premio acumulado.", bolos:6, rango:[1,38]},
+      ]},
+    {nombre:"La Primera", inicial:"LP", color:"#5c3a8c",
+      juegos:[
+        {nombre:"Quiniela", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de La Primera (mediodía o noche).", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Loto 5 (+ Loto5+)", desc:"5 números de 38 bolas, más bola adicional Loto5+ de 1 al 10.", bolos:5, rango:[1,38],
+          extras:[{nombre:"Loto5+", color:"#c0392b", rango:[1,10]}]},
+      ]},
+    {nombre:"LoteDom", inicial:"LD", color:"#a15c2f",
+      juegos:[
+        {nombre:"Quiniela LoteDom", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de LoteDom.", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Palé", desc:"Juega 2 números (00-99); ganas si ambos salen entre los 3 sorteados.", bolos:3, rango:[0,99], jugada:2},
+        {nombre:"Tripleta", desc:"Juega los 3 números (00-99) del sorteo completo.", bolos:3, rango:[0,99], jugada:3},
+        {nombre:"El Quemaito Mayor", desc:"6 números, sorteo especial acumulado.", bolos:6, rango:[1,38]},
+        {nombre:"Súper Palé", desc:"Modalidad Palé especial de LoteDom (Súper Palé / Agarra 4), 2 números (00-99).", bolos:3, rango:[0,99], jugada:2},
+      ]},
+    {nombre:"La Suerte Dominicana", inicial:"LS", color:"#2f6b6a",
+      juegos:[
+        {nombre:"Quiniela", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de La Suerte Dominicana.", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Palé", desc:"Juega 2 números (00-99); ganas si ambos salen entre los 3 sorteados.", bolos:3, rango:[0,99], jugada:2},
+        {nombre:"Tripleta", desc:"Juega los 3 números (00-99) del sorteo completo.", bolos:3, rango:[0,99], jugada:3},
+      ]},
+    {nombre:"PowerBall", inicial:"PB", color:"#c1121f",
+      juegos:[
+        {nombre:"Powerball", desc:"5 números de 69 bolas (blancas), más 1 Powerball de 26 bolas (roja).", bolos:5, rango:[1,69],
+          extras:[{nombre:"Powerball", color:"#c1121f", rango:[1,26]}]},
+      ]},
+    {nombre:"Mega Millions", inicial:"MM", color:"#1d3557",
+      juegos:[
+        {nombre:"Mega Millions", desc:"5 números de 70 bolas (blancas), más 1 Mega Ball de 25 bolas (dorada).", bolos:5, rango:[1,70],
+          extras:[{nombre:"Mega Ball", color:"#f4a300", rango:[1,25]}]},
+      ]},
+    {nombre:"Florida", inicial:"FL", color:"#0b6e4f",
+      juegos:[
+        {nombre:"Quiniela Florida Día", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de Florida Día.", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Quiniela Florida Noche", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de Florida Noche.", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Palé Florida", desc:"Juega 2 números (00-99); ganas si ambos salen entre los 3 sorteados.", bolos:3, rango:[0,99], jugada:2},
+      ]},
+    {nombre:"Lotería New York", inicial:"NY", color:"#3a3a3a",
+      juegos:[
+        {nombre:"Quiniela New York Tarde", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de New York Tarde.", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Quiniela New York Noche", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de New York Noche.", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Palé New York", desc:"Juega 2 números (00-99); ganas si ambos salen entre los 3 sorteados.", bolos:3, rango:[0,99], jugada:2},
+      ]},
+    {nombre:"Anguilla Lottery", inicial:"AN", color:"#0077b6",
+      juegos:[
+        {nombre:"Quiniela", desc:"Juega 1 número (00-99) sobre el sorteo de 3 posiciones de Anguilla Lottery.", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Palé", desc:"Juega 2 números (00-99); ganas si ambos salen entre los 3 sorteados.", bolos:3, rango:[0,99], jugada:2},
+        {nombre:"Tripleta", desc:"Juega los 3 números (00-99) del sorteo completo.", bolos:3, rango:[0,99], jugada:3},
+      ]},
+    {nombre:"King Lottery", inicial:"KL", color:"#7209b7",
+      juegos:[
+        {nombre:"Quiniela Día", desc:"Juega 1 número (00-99), sorteo de mediodía (números tomados de Pick 3 / Pick 4 de Sint Maarten).", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Quiniela Noche", desc:"Juega 1 número (00-99), sorteo de la noche (números tomados de Pick 3 / Pick 4 de Sint Maarten).", bolos:3, rango:[0,99], jugada:1},
+        {nombre:"Palé", desc:"Juega 2 números (00-99); ganas si ambos salen entre los 3 sorteados.", bolos:3, rango:[0,99], jugada:2},
+      ]},
+  ];
+
+  const resultadosRecientes = [
+    // ----- Lotería Nacional (mismo sorteo de 3 posiciones, distintas modalidades) -----
+    {loteria:"Lotería Nacional", juego:"Quiniela Nacional", fecha:"26 Jul 2026", numeros:[73,33,57]},
+    {loteria:"Lotería Nacional", juego:"Gana Más", fecha:"26 Jul 2026", numeros:[73,33,57]},
+    {loteria:"Lotería Nacional", juego:"Juega + Pega +", fecha:"26 Jul 2026", numeros:[73,33,57]},
+
+    // ----- Leidsa -----
+    {loteria:"Leidsa", juego:"Loto Leidsa (+ Más/Súper Más)", fecha:"24 Jul 2026", numeros:[3,14,27,8,19,32]},
+    {loteria:"Leidsa", juego:"Loto Pool", fecha:"22 Jul 2026", numeros:[4,11,17,23,29]},
+    {loteria:"Leidsa", juego:"Pega 3 Más", fecha:"25 Jul 2026", numeros:[8,22,41]},
+    {loteria:"Leidsa", juego:"Quiniela Leidsa / Palé", fecha:"25 Jul 2026", numeros:[14,56,79]},
+    {loteria:"Leidsa", juego:"Súper Kino TV", fecha:"26 Jul 2026", numeros:[2,5,9,13,18,22,27,31,34,38,42,47,51,55,58,63,67,71,75,79]},
+
+    // ----- Loteka (Quiniela / Mega Chances comparten el sorteo base de posiciones) -----
+    {loteria:"Loteka", juego:"Quiniela Loteka", fecha:"23 Jul 2026", numeros:[11,25,2]},
+    {loteria:"Loteka", juego:"Toca 3", fecha:"23 Jul 2026", numeros:[11,25,2]},
+    {loteria:"Loteka", juego:"Mega Chances", fecha:"23 Jul 2026", numeros:[8,34,52,67,91]},
+    {loteria:"Loteka", juego:"Mega Chances Repartidera", fecha:"23 Jul 2026", numeros:[19,42,58,73,85]},
+    {loteria:"Loteka", juego:"Mega Lotto", fecha:"19 Jul 2026", numeros:[3,14,22,29,37,45]},
+
+    // ----- Lotería Real (Quiniela/Palé/Tripleta salen del mismo sorteo de 3 posiciones) -----
+    {loteria:"Lotería Real", juego:"Quiniela", fecha:"23 Jul 2026", numeros:[6,29,15]},
+    {loteria:"Lotería Real", juego:"Palé", fecha:"23 Jul 2026", numeros:[6,29,15]},
+    {loteria:"Lotería Real", juego:"Tripleta", fecha:"23 Jul 2026", numeros:[6,29,15]},
+    {loteria:"Lotería Real", juego:"Loto Real", fecha:"20 Jul 2026", numeros:[2,9,16,23,31,38]},
+
+    // ----- La Primera -----
+    {loteria:"La Primera", juego:"Quiniela", fecha:"23 Jul 2026", numeros:[4,17,28]},
+    {loteria:"La Primera", juego:"Loto 5 (+ Loto5+)", fecha:"21 Jul 2026", numeros:[6,13,19,27,34]},
+
+    // ----- LoteDom (Quiniela/Palé/Tripleta/Súper Palé comparten el sorteo base) -----
+    {loteria:"LoteDom", juego:"Quiniela LoteDom", fecha:"22 Jul 2026", numeros:[9,26,13]},
+    {loteria:"LoteDom", juego:"Palé", fecha:"22 Jul 2026", numeros:[9,26,13]},
+    {loteria:"LoteDom", juego:"Tripleta", fecha:"22 Jul 2026", numeros:[9,26,13]},
+    {loteria:"LoteDom", juego:"Súper Palé", fecha:"22 Jul 2026", numeros:[9,26,13]},
+    {loteria:"LoteDom", juego:"El Quemaito Mayor", fecha:"18 Jul 2026", numeros:[5,12,18,24,31,36]},
+
+    // ----- La Suerte Dominicana (Quiniela/Palé/Tripleta comparten el sorteo base) -----
+    {loteria:"La Suerte Dominicana", juego:"Quiniela", fecha:"22 Jul 2026", numeros:[7,31,44]},
+    {loteria:"La Suerte Dominicana", juego:"Palé", fecha:"22 Jul 2026", numeros:[7,31,44]},
+    {loteria:"La Suerte Dominicana", juego:"Tripleta", fecha:"22 Jul 2026", numeros:[7,31,44]},
+
+    // ----- PowerBall -----
+    {loteria:"PowerBall", juego:"Powerball", fecha:"22 Jul 2026", numeros:[5,18,29,41,63,14]},
+
+    // ----- Mega Millions -----
+    {loteria:"Mega Millions", juego:"Mega Millions", fecha:"21 Jul 2026", numeros:[8,22,35,47,61,9]},
+
+    // ----- Florida -----
+    {loteria:"Florida", juego:"Quiniela Florida Día", fecha:"24 Jul 2026", numeros:[15,38,72]},
+    {loteria:"Florida", juego:"Palé Florida", fecha:"24 Jul 2026", numeros:[15,38,72]},
+    {loteria:"Florida", juego:"Quiniela Florida Noche", fecha:"24 Jul 2026", numeros:[9,41,63]},
+
+    // ----- Lotería New York -----
+    {loteria:"Lotería New York", juego:"Quiniela New York Tarde", fecha:"24 Jul 2026", numeros:[2,49,80]},
+    {loteria:"Lotería New York", juego:"Palé New York", fecha:"24 Jul 2026", numeros:[2,49,80]},
+    {loteria:"Lotería New York", juego:"Quiniela New York Noche", fecha:"24 Jul 2026", numeros:[17,33,58]},
+
+    // ----- Anguilla Lottery (Quiniela/Palé/Tripleta comparten el sorteo base) -----
+    {loteria:"Anguilla Lottery", juego:"Quiniela", fecha:"24 Jul 2026", numeros:[10,55,67]},
+    {loteria:"Anguilla Lottery", juego:"Palé", fecha:"24 Jul 2026", numeros:[10,55,67]},
+    {loteria:"Anguilla Lottery", juego:"Tripleta", fecha:"24 Jul 2026", numeros:[10,55,67]},
+
+    // ----- King Lottery -----
+    {loteria:"King Lottery", juego:"Quiniela Día", fecha:"23 Jul 2026", numeros:[33,64,91]},
+    {loteria:"King Lottery", juego:"Palé", fecha:"23 Jul 2026", numeros:[33,64,91]},
+    {loteria:"King Lottery", juego:"Quiniela Noche", fecha:"23 Jul 2026", numeros:[7,29,50]},
+  ];
+
+  // frecuencias globales de ejemplo: numero -> veces
+  const frecuencias = {};
+  for(let i=0;i<=99;i++){ frecuencias[i] = Math.floor(Math.random()*30)+1; }
+
+  // (ya no usamos pares fijos globales: ahora las combinaciones se generan
+  // según el juego y la lotería seleccionados, ver generarAnclas)
+
+  /* ---------- NAVEGACION ---------- */
+  function mostrar(id, btn){
+    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  /* ---------- FECHAS: detectar dinámicamente el sorteo de "hoy" ---------- */
+  // El prototipo usa varios formatos de fecha según la sección ("24 Jul 2026" en el
+  // feed, "DD-MM-YYYY" en el historial real del Kino). Estos helpers los convierten
+  // a un objeto Date real para poder compararlos contra la fecha actual del dispositivo.
+  const MESES_ABR = {ene:0,feb:1,mar:2,abr:3,may:4,jun:5,jul:6,ago:7,sep:8,oct:9,nov:10,dic:11};
+
+  function parsearFechaTexto(fecha){ // "24 Jul 2026"
+    const partes = fecha.trim().split(/\s+/);
+    if(partes.length !== 3) return null;
+    const dia = parseInt(partes[0],10);
+    const mes = MESES_ABR[partes[1].toLowerCase().slice(0,3)];
+    const anio = parseInt(partes[2],10);
+    if(isNaN(dia) || mes===undefined || isNaN(anio)) return null;
+    return new Date(anio, mes, dia);
+  }
+
+  function parsearFechaDDMMYYYY(fecha){ // "06-05-2026"
+    const m = fecha.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+    if(!m) return null;
+    return new Date(parseInt(m[3],10), parseInt(m[2],10)-1, parseInt(m[1],10));
+  }
+
+  function esFechaHoy(fechaObj){
+    if(!fechaObj) return false;
+    const hoy = new Date();
+    return fechaObj.getFullYear()===hoy.getFullYear() && fechaObj.getMonth()===hoy.getMonth() && fechaObj.getDate()===hoy.getDate();
+  }
+
+  const MESES_NOMBRE = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  function formatearFechaTexto(date){ // Date -> "24 Jul 2026" (mismo formato que resultadosRecientes)
+    return `${date.getDate().toString().padStart(2,'0')} ${MESES_NOMBRE[date.getMonth()]} ${date.getFullYear()}`;
+  }
+  function parsearFechaISO(fechaISO){ // "2026-07-26" -> Date
+    const [y,m,d] = fechaISO.split('-').map(Number);
+    return new Date(y, m-1, d);
+  }
+  function isoAFormatoDDMMYYYY(fechaISO){ // "2026-07-26" -> "26-07-2026" (formato de kinoHistorial)
+    const [y,m,d] = fechaISO.split('-');
+    return `${d}-${m}-${y}`;
+  }
+
+  /* ---------- PERSISTENCIA LOCAL (localStorage del navegador) ---------- */
+  // Guarda los sorteos que registres a mano (o que llegue a traer en el futuro un
+  // backend real) directamente en ESTE celular, para que el historial, el calendario
+  // y el motor de recomendaciones no se pierdan al cerrar la página. No sale de tu
+  // navegador: no se comparte con nadie ni con ningún servidor.
+  const CLAVE_LOCALSTORAGE_SORTEOS = 'misRecomendaciones_sorteosLocales_v1';
+
+  function cargarSorteosLocales(){
+    try{
+      const crudo = localStorage.getItem(CLAVE_LOCALSTORAGE_SORTEOS);
+      return crudo ? JSON.parse(crudo) : [];
+    } catch(err){
+      console.warn('No se pudo leer localStorage:', err);
+      return [];
+    }
+  }
+
+  function guardarListaSorteosLocales(lista){
+    try{
+      localStorage.setItem(CLAVE_LOCALSTORAGE_SORTEOS, JSON.stringify(lista));
+    } catch(err){
+      console.warn('No se pudo escribir en localStorage (¿modo incógnito o espacio lleno?):', err);
+    }
+  }
+
+  /** Guarda o actualiza un sorteo en el navegador. `sorteo.fecha` debe venir en formato ISO 'YYYY-MM-DD'. */
+  function guardarSorteoLocal(sorteo){
+    const lista = cargarSorteosLocales();
+    const idx = lista.findIndex(s => s.loteria===sorteo.loteria && s.juego===sorteo.juego && s.fecha===sorteo.fecha);
+    if(idx >= 0) lista[idx] = sorteo; else lista.push(sorteo);
+    guardarListaSorteosLocales(lista);
+    return sorteo;
+  }
+
+  /** Convierte los sorteos guardados en el navegador al formato que usa el feed de "Resultados". */
+  function convertirLocalesAFormatoFeed(){
+    return cargarSorteosLocales().map(s => ({
+      loteria: s.loteria,
+      juego: s.juego,
+      fecha: formatearFechaTexto(parsearFechaISO(s.fecha)),
+      numeros: s.numeros,
+    }));
+  }
+
+  /** Integra un sorteo local del Kino al historial real que usa el motor (Eslabón Cerrado / Post-Inercia). */
+  function integrarSorteoLocalEnKinoHistorial(sorteo){
+    if(typeof kinoHistorial === 'undefined') return;
+    const fechaKino = isoAFormatoDDMMYYYY(sorteo.fecha);
+    const idx = kinoHistorial.findIndex(s => s.fecha === fechaKino);
+    if(idx >= 0) kinoHistorial[idx] = { fecha: fechaKino, numeros: sorteo.numeros };
+    else {
+      kinoHistorial.push({ fecha: fechaKino, numeros: sorteo.numeros });
+      kinoHistorial.sort((a,b) => parsearFechaDDMMYYYY(a.fecha) - parsearFechaDDMMYYYY(b.fecha));
+    }
+    recalcularEstadisticasKino(); // refresca frecuencias/afinidad para que el motor lo use de inmediato
+  }
+
+  /** Igual que integrarSorteoLocalEnKinoHistorial, pero para Quiniela Nacional. */
+  function integrarSorteoLocalEnNacionalHistorial(sorteo){
+    if(typeof nacionalHistorial === 'undefined') return;
+    const fechaNac = isoAFormatoDDMMYYYY(sorteo.fecha);
+    const idx = nacionalHistorial.findIndex(s => s.fecha === fechaNac);
+    if(idx >= 0) nacionalHistorial[idx] = { fecha: fechaNac, numeros: sorteo.numeros };
+    else {
+      nacionalHistorial.push({ fecha: fechaNac, numeros: sorteo.numeros });
+      nacionalHistorial.sort((a,b) => parsearFechaDDMMYYYY(a.fecha) - parsearFechaDDMMYYYY(b.fecha));
+    }
+    recalcularEstadisticasNacional(); // refresca calientes/fríos para que el motor lo use de inmediato
+  }
+
+  /** Al cargar la página, integra a cada historial real cualquier sorteo local guardado en sesiones anteriores. */
+  function integrarSorteosLocalesAlCargar(){
+    cargarSorteosLocales().forEach(s => {
+      if(s.loteria === "Leidsa" && s.juego === "Súper Kino TV") integrarSorteoLocalEnKinoHistorial(s);
+      if(s.loteria === "Lotería Nacional" && s.juego === "Quiniela Nacional") integrarSorteoLocalEnNacionalHistorial(s);
+    });
+  }
+
+  /* ---------- FEED RESULTADOS ---------- */
+  function pintarFeed(){
+    const cont = document.getElementById('feed-resultados');
+    const combinados = [...convertirLocalesAFormatoFeed(), ...resultadosRecientes];
+
+    // Agrupar todos los resultados por lotería, respetando el orden del catálogo
+    // "loterias" (y añadiendo al final cualquier lotería que no esté en el catálogo).
+    const gruposPorLoteria = {};
+    combinados.forEach(r => {
+      if(!gruposPorLoteria[r.loteria]) gruposPorLoteria[r.loteria] = [];
+      gruposPorLoteria[r.loteria].push(r);
+    });
+    const nombresOrdenados = [
+      ...loterias.map(l => l.nombre).filter(n => gruposPorLoteria[n]),
+      ...Object.keys(gruposPorLoteria).filter(n => !loterias.some(l => l.nombre === n)),
+    ];
+
+    cont.innerHTML = nombresOrdenados.map(nombreLoteria => {
+      const items = gruposPorLoteria[nombreLoteria];
+      const filasJuegos = items.map(r => {
+        const esHoy = esFechaHoy(parsearFechaTexto(r.fecha));
+        return `
+        <div class="result-card">
+          <div class="result-top">
+            <span class="juego-nombre">${r.juego || ''}</span>
+            <span>${r.fecha}${esHoy ? '<span class="etiqueta-hoy">· HOY</span>' : ''}</span>
+          </div>
+          <div class="balls">
+            ${r.numeros.map(n=>`<div class="ball ${esHoy?'hoy':''}">${n.toString().padStart(2,'0')}</div>`).join('')}
+          </div>
+        </div>
+      `;}).join('');
+
+      return `
+      <div class="loteria-group">
+        <h3 class="loteria-group-title">${nombreLoteria}</h3>
+        ${filasJuegos}
+      </div>
+    `;}).join('');
+  }
+
+  /* ---------- FRECUENCIAS ---------- */
+  let ordenFreqActual = 'desc';
+
+  function poblarSelectoresFreq(){
+    const selLot = document.getElementById('freq-loteria');
+    selLot.innerHTML = loterias.map((l,i) => `<option value="${i}">${l.nombre}</option>`).join('');
+    cambiarLoteriaFreq();
+  }
+
+  function cambiarLoteriaFreq(){
+    const idxLot = document.getElementById('freq-loteria').value;
+    const l = loterias[idxLot];
+    const selJuego = document.getElementById('freq-juego');
+    selJuego.innerHTML = l.juegos.map((j,i) => `<option value="${i}">${j.nombre}</option>`).join('');
+    cambiarJuegoFreq();
+  }
+
+  function cambiarJuegoFreq(){
+    pintarFrecuencias(ordenFreqActual);
+  }
+
+  function pintarFrecuencias(orden){
+    const idxLot = document.getElementById('freq-loteria').value;
+    const idxJuego = document.getElementById('freq-juego').value;
+    const l = loterias[idxLot];
+    const j = l.juegos[idxJuego];
+    const real = datosRealesDe(j.nombre);
+    const fuente = real ? real.frecuencias() : frecuencias;
+    const [min,max] = j.rango;
+
+    const entradas = Object.entries(fuente)
+      .map(([k,v]) => [Number(k), v])
+      .filter(([num]) => num >= min && num <= max)
+      .sort((a,b) => orden==='desc' ? b[1]-a[1] : a[1]-b[1]);
+
+    const nota = document.getElementById('freq-fuente-nota');
+    nota.textContent = real
+      ? `Calculado sobre ${real.historial().length} sorteos reales proporcionados. Más calientes arriba, más fríos abajo (cambia el orden con los botones).`
+      : `Datos de ejemplo — aún no hay historial real cargado para ${l.nombre} — ${j.nombre}.`;
+
+    const cont = document.getElementById('lista-frecuencias');
+    if(entradas.length === 0){ cont.innerHTML = '<div class="hint">Sin datos para este rango.</div>'; return; }
+    const maxVal = Math.max(...entradas.map(e=>e[1]));
+    cont.innerHTML = entradas.slice(0,12).map(([num,veces], i) => `
+      <div class="freq-row">
+        <div class="freq-rank">${i+1}</div>
+        <div class="freq-ball">${Number(num).toString().padStart(2,'0')}</div>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:${(veces/maxVal*100).toFixed(0)}%"></div></div>
+        <div class="freq-count">${veces} veces</div>
+      </div>
+    `).join('');
+  }
+  function ordenarFreq(orden, btn){
+    document.querySelectorAll('#frecuencias .freq-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    ordenFreqActual = orden;
+    pintarFrecuencias(orden);
+  }
+
+  /* ---------- RECOMENDACIONES ---------- */
+  function numerosAleatorios(excluir, cantidad, min=0, max=35){
+    const nums = new Set();
+    const totalDisponible = max - min + 1;
+    const cant = Math.min(cantidad, totalDisponible);
+    while(nums.size < cant){
+      const n = Math.floor(Math.random()*(max-min+1)) + min;
+      if(!excluir.includes(n)) nums.add(n);
+    }
+    return Array.from(nums);
+  }
+
+  // Selección aleatoria PONDERADA por frecuencia histórica real: los números que
+  // más han salido tienen más "boletos" en la rifa interna, pero sigue siendo
+  // aleatorio — no es garantía, solo refleja la distribución real del historial.
+  function numerosPonderados(excluir, cantidad, pesos, min, max){
+    // Candidatos únicos disponibles, cada uno con su peso.
+    const candidatos = [];
+    for(let n=min; n<=max; n++){
+      if(excluir.includes(n)) continue;
+      candidatos.push({ n, peso: Math.max(1, pesos[n] || 1) });
+    }
+
+    if(candidatos.length < cantidad){
+      console.warn(`numerosPonderados: se pidieron ${cantidad} pero solo hay ${candidatos.length} disponibles.`);
+      cantidad = candidatos.length; // degrada con gracia en vez de colgarse o devolver de menos en silencio
+    }
+
+    const seleccionados = [];
+    while(seleccionados.length < cantidad){
+      const pesoTotal = candidatos.reduce((s,c) => s + c.peso, 0);
+      let r = Math.random() * pesoTotal;
+      let idx = 0;
+      while(r > candidatos[idx].peso){ r -= candidatos[idx].peso; idx++; }
+      seleccionados.push(candidatos[idx].n);
+      candidatos.splice(idx, 1); // clave: lo saco del pool, no puede repetirse ni causar loop infinito
+    }
+
+    return seleccionados.sort((a,b) => a-b);
+  }
+  function poblarSelectoresRec(){
+    const selLot = document.getElementById('rec-loteria');
+    selLot.innerHTML = loterias.map((l,i) => `<option value="${i}">${l.nombre}</option>`).join('');
+    cambiarLoteriaRec();
+  }
+
+  function cambiarLoteriaRec(){
+    const idxLot = document.getElementById('rec-loteria').value;
+    const l = loterias[idxLot];
+    const selJuego = document.getElementById('rec-juego');
+    selJuego.innerHTML = l.juegos.map((j,i) => `<option value="${i}">${j.nombre}</option>`).join('');
+    cambiarJuegoRec();
+  }
+
+  function cambiarJuegoRec(){
+    const idxLot = document.getElementById('rec-loteria').value;
+    const idxJuego = document.getElementById('rec-juego').value;
+    const j = loterias[idxLot].juegos[idxJuego];
+
+    document.getElementById('combos').innerHTML = '';
+
+    // Todo juego funciona igual, sin pasos manuales ni selector visible: al pulsar
+    // "Ver sugerencias" el algoritmo toma automáticamente el último sorteo disponible
+    // (historial real si existe, ver JUEGOS_REALES; si no, el último resultado
+    // cargado en "Resultados") y aplica todas las reglas del motor correspondiente.
+    juegoRealActual = j.nombre; // para que generar()/generarPorPostInercia() sepan qué historial usar
+    const real = datosRealesDe(j.nombre);
+    modoKinoActual = real ? real.modos[0] : 'automatico';
+  }
+
+  // Ya no hay alternancia manual/automática visible: todo juego usa automáticamente
+  // el último sorteo disponible (historial real si existe, ver JUEGOS_REALES; si no,
+  // el último resultado cargado en "Resultados").
+  let modoKinoActual = 'automatico';
+  let juegoRealActual = null; // nombre del juego actualmente seleccionado, si tiene historial real (ver JUEGOS_REALES)
+
+  // 3 "anclas" de ejemplo: transforma lo que la persona escribió en 3 parejas
+  // distintas, ajustadas siempre al rango válido del juego elegido.
+  function generarAnclas(entrada, rango){
+    const [min,max] = rango;
+    const span = max - min + 1;
+    const ajustar = v => ((((v-min)%span)+span)%span) + min;
+    const anclas = [];
+    for(let i=0;i<3;i++){
+      const a = ajustar(entrada[i % entrada.length] + i*3);
+      const b = ajustar(entrada[(i+2) % entrada.length] + i*5 + 7);
+      anclas.push(Array.from(new Set([a,b])));
+    }
+    return anclas;
+  }
+
+  // Filtro de "realismo visual" para juegos marcados con reglasCobertura (ej: Súper Kino TV).
+  // Esto NO mejora probabilidades reales; solo descarta patrones que casi nunca
+  // ocurren en la práctica de un sorteo real (todo pares, 3+ seguidos, etc.)
+  function cumpleReglasCobertura(combo, rango){
+    const sorted = [...combo].sort((a,b)=>a-b);
+
+    // 1. Cobertura por decenas: al menos 4 decenas distintas, máximo 4 números por decena
+    const conteoDecena = {};
+    combo.forEach(n=>{ const d = Math.ceil(n/10); conteoDecena[d] = (conteoDecena[d]||0) + 1; });
+    if(Object.keys(conteoDecena).length < 4) return false;
+    if(Object.values(conteoDecena).some(c => c > 4)) return false;
+
+    // 2. Máximo 2 consecutivos seguidos (prohibido 3+ en fila)
+    let consec = 1;
+    for(let i=1;i<sorted.length;i++){
+      if(sorted[i] === sorted[i-1] + 1){
+        consec++;
+        if(consec >= 3) return false;
+      } else {
+        consec = 1;
+      }
+    }
+
+    // 3. Balance par/impar entre 3/7 y 7/3 (nunca todo par o todo impar)
+    const impares = combo.filter(n => n % 2 !== 0).length;
+    const pares = combo.length - impares;
+    if(impares === 0 || pares === 0) return false;
+    if(impares < 3 || impares > 7) return false;
+
+    // 4. Descartar patrones rígidos: secuencia con el mismo salto constante entre todos
+    const diffs = [];
+    for(let i=1;i<sorted.length;i++) diffs.push(sorted[i] - sorted[i-1]);
+    const saltoConstante = diffs.every(d => d === diffs[0]);
+    if(saltoConstante) return false;
+
+    return true;
+  }
+
+
+  function generar(){
+    const boton = document.getElementById('btn-sugerencias');
+    const textoOriginal = boton.innerHTML;
+    boton.disabled = true;
+    boton.classList.add('cargando');
+    boton.innerHTML = `<span class="spinner-inline"></span>Analizando…`;
+
+    // Pequeña pausa para que se sienta el "procesamiento" antes de mostrar resultados
+    setTimeout(() => {
+      generarInterno();
+      boton.disabled = false;
+      boton.classList.remove('cargando');
+      boton.innerHTML = textoOriginal;
+    }, 550);
+  }
+
+  function generarInterno(){
+    const idxLot = document.getElementById('rec-loteria').value;
+    const idxJuego = document.getElementById('rec-juego').value;
+    const l = loterias[idxLot];
+    const j = l.juegos[idxJuego];
+    const cantJugada = j.jugada || j.bolos; // cantidad de numeros que realmente se juegan en el boleto
+
+    // Juegos con historial real (ver JUEGOS_REALES, hoy: Súper Kino TV y Quiniela
+    // Nacional) usan siempre el mismo motor automático de Frecuencia + Post-Inercia.
+    const real = datosRealesDe(j.nombre);
+    if(real){
+      generarPorPostInercia(l, j, cantJugada, real.historial(), real.frecuencias());
+      return;
+    }
+
+    // Resto de los juegos: sin historial real cargado todavía, así que se toma
+    // automáticamente el último resultado publicado en "Resultados" para esa
+    // lotería y modalidad (mismo dato que ve el usuario en esa pestaña). Si por
+    // algún motivo no hay un resultado cargado para esta combinación exacta, se
+    // usa una semilla aleatoria dentro del rango válido para no bloquear al usuario.
+    const ultimoPublicado = resultadosRecientes.find(r => r.loteria === l.nombre && r.juego === j.nombre);
+    const partes = (ultimoPublicado && ultimoPublicado.numeros.length >= j.bolos)
+      ? ultimoPublicado.numeros.slice(0, j.bolos)
+      : numerosAleatorios([], j.bolos, j.rango[0], j.rango[1]);
+
+    const anclas = generarAnclas(partes, j.rango);
+    const cont = document.getElementById('combos');
+    cont.innerHTML = '';
+
+    anclas.forEach((par,i)=>{
+      let todos;
+      let intentos = 0;
+      do{
+        const necesarios = cantJugada - par.length;
+        const relleno = necesarios > 0 ? numerosAleatorios(par, necesarios, j.rango[0], j.rango[1]) : [];
+        todos = [...par, ...relleno].slice(0, cantJugada);
+        intentos++;
+      } while(j.reglasCobertura && !cumpleReglasCobertura(todos, j.rango) && intentos < 400);
+
+      const extras = (j.extras||[]).map(e => ({
+        color: e.color,
+        nombre: e.nombre,
+        valor: numerosAleatorios([], 1, e.rango[0], e.rango[1])[0]
+      }));
+
+      const div = document.createElement('div');
+      div.className='combo';
+      div.innerHTML = `
+        <div class="idx">${i+1}</div>
+        <div class="balls">
+          ${todos.map(n=>`<div class="ball ${par.includes(n)?'anchor':''}">${n.toString().padStart(2,'0')}</div>`).join('')}
+          ${extras.map(e=>`<div class="ball" style="background:${e.color}; color:#fff; border-color:${e.color};" title="${e.nombre}">${e.valor.toString().padStart(2,'0')}</div>`).join('')}
+        </div>
+      `;
+      cont.appendChild(div);
+    });
+  }
+
+
+  /* ---------- LOTERIAS ---------- */
+  function pintarListaLoterias(){
+    document.getElementById('lista-loterias').innerHTML = loterias.map(l => `
+      <div class="lot-item" onclick="abrirLoteria('${l.nombre}')">
+        <div class="left">
+          <div class="lot-badge" style="background:${l.color};">${l.inicial}</div>
+          <div class="name">${l.nombre}</div>
+        </div>
+        <div class="arrow">&rarr;</div>
+      </div>
+    `).join('');
+  }
+
+  function abrirLoteria(nombre){
+    const l = loterias.find(x => x.nombre === nombre);
+    document.getElementById('lot-lista').style.display = 'none';
+    document.getElementById('lot-detail').classList.add('show');
+    document.getElementById('lot-detail-titulo').textContent = nombre;
+    document.getElementById('lot-detail-badge').textContent = l.inicial;
+    document.getElementById('lot-detail-badge').style.background = l.color;
+
+    // tipos de juego de esta loteria
+    document.getElementById('lista-juegos').innerHTML = l.juegos.map((j, idx) => `
+      <div class="juego-card" onclick="abrirJuego('${l.nombre}', ${idx})" style="cursor:pointer;">
+        <div class="juego-nombre">${j.nombre}</div>
+        <div class="juego-desc">${j.desc}</div>
+      </div>
+    `).join('');
+  }
+
+  function volverListaLoterias(){
+    document.getElementById('lot-lista').style.display = 'block';
+    document.getElementById('lot-detail').classList.remove('show');
+  }
+
+  /* ---------- DETALLE DE UN JUEGO ESPECIFICO ---------- */
+  let juegoActual = null; // {loteria, indice}
+
+  function abrirJuego(nombreLoteria, indice){
+    const l = loterias.find(x => x.nombre === nombreLoteria);
+    const j = l.juegos[indice];
+    juegoActual = {loteria:nombreLoteria, indice};
+
+    document.getElementById('lot-detail').classList.remove('show');
+    document.getElementById('juego-detail').classList.add('show');
+    document.getElementById('juego-detail-lot-nombre').textContent = nombreLoteria;
+    document.getElementById('juego-detail-titulo').textContent = j.nombre;
+    document.getElementById('juego-detail-desc').textContent = j.desc;
+    document.getElementById('fecha-busqueda').value = '';
+
+    // ultimos 5 sorteos de este juego: usa historial REAL si existe (ver JUEGOS_REALES),
+    // si no, genera datos mock respetando su cantidad de bolos y rango
+    const cont = document.getElementById('ultimos-sorteos');
+    let sorteos = [];
+    const realJuego = datosRealesDe(j.nombre);
+    if(realJuego){
+      const ultimos5 = realJuego.historial().slice(-5).reverse();
+      sorteos = ultimos5.map(s => ({fecha: s.fecha, fechaObj: parsearFechaDDMMYYYY(s.fecha), numeros: s.numeros, extras: []}));
+    } else {
+      const localesDeEsteJuego = cargarSorteosLocales().filter(s => s.loteria===nombreLoteria && s.juego===j.nombre);
+      for(let i=0;i<5;i++){
+        const fechaObj = new Date();
+        fechaObj.setDate(fechaObj.getDate() - i);
+        const fechaISO = fechaObj.toISOString().slice(0,10);
+        const local = localesDeEsteJuego.find(s => s.fecha === fechaISO);
+        if(local){
+          sorteos.push({fecha: fechaObj.toLocaleDateString('es-DO',{day:'2-digit',month:'short'}), fechaObj, numeros: local.numeros, extras: []});
+        } else {
+          const nums = numerosAleatorios([], j.bolos, j.rango[0], j.rango[1]);
+          const extras = (j.extras||[]).map(e => ({
+            color: e.color,
+            valor: numerosAleatorios([], 1, e.rango[0], e.rango[1])[0]
+          }));
+          sorteos.push({fecha: fechaObj.toLocaleDateString('es-DO',{day:'2-digit',month:'short'}), fechaObj, numeros:nums, extras});
+        }
+      }
+    }
+    cont.innerHTML = sorteos.map(s=>{
+      const esHoy = esFechaHoy(s.fechaObj);
+      return `
+      <div class="draw-row">
+        <div class="draw-date">${s.fecha}${esHoy ? '<span class="etiqueta-hoy">· HOY</span>' : ''}</div>
+        <div class="balls">
+          ${s.numeros.map(n=>`<div class="ball ${esHoy?'hoy':''}" style="width:26px;height:26px;font-size:0.68rem;">${n.toString().padStart(2,'0')}</div>`).join('')}
+          ${(s.extras||[]).map(e=>`<div class="ball" style="width:26px;height:26px;font-size:0.68rem;background:${e.color};color:#fff;border-color:${e.color};">${e.valor.toString().padStart(2,'0')}</div>`).join('')}
+        </div>
+      </div>
+    `;}).join('');
+    if(realJuego){
+      let lineaEstado = `Datos reales proporcionados (${realJuego.historial().length} sorteos).`;
+      if(realJuego.historial().length === 0){
+        // Diagnóstico: por qué no hay datos (ver estadoCargaSupabase, más arriba).
+        if(!estadoCargaSupabase.intentado){
+          lineaEstado += ' Todavía no se intentó conectar con Supabase.';
+        } else if(!estadoCargaSupabase.ok){
+          lineaEstado += ` No se pudo conectar con Supabase: ${estadoCargaSupabase.error}`;
+        } else {
+          lineaEstado += ` Se conectó a Supabase (${estadoCargaSupabase.totalFilasRecibidas} sorteos en la tabla), pero ninguno tenía loteria/juego con el nombre exacto que espera este juego.`;
+        }
+      }
+      cont.innerHTML = `<div class="hint" style="margin-bottom:8px;">${lineaEstado}</div>` + cont.innerHTML;
+    }
+    document.getElementById('resultado-busqueda-fecha').innerHTML = '';
+    // leyenda de extras (Más / Súper Más / etc.)
+    const leyendaExtras = document.getElementById('leyenda-extras');
+    if(j.extras && j.extras.length){
+      leyendaExtras.style.display = 'flex';
+      leyendaExtras.innerHTML = j.extras.map(e => `
+        <div class="leyenda-item"><span class="leyenda-dot" style="background:${e.color};"></span>${e.nombre}</div>
+      `).join('');
+    } else {
+      leyendaExtras.style.display = 'none';
+      leyendaExtras.innerHTML = '';
+    }
+
+    pintarFrecuenciaJuego('desc');
+  }
+
+  // "Calendario buscable": el <input type=date> entrega siempre 'YYYY-MM-DD'. Busca
+  // esa fecha en el historial REAL del juego abierto (si lo tiene, ver JUEGOS_REALES);
+  // si no hay historial real para ese juego, o la fecha no aparece, lo indica claramente.
+  // Como puede haber más de un sorteo el mismo día (ver 30-06-2026 y 24-07-2026 en el
+  // historial de Quiniela Nacional), muestra TODAS las coincidencias de esa fecha.
+  function buscarSorteoPorFecha(){
+    const cajaResultado = document.getElementById('resultado-busqueda-fecha');
+    const valorISO = document.getElementById('fecha-busqueda').value; // 'YYYY-MM-DD'
+    if(!valorISO || !juegoActual){ cajaResultado.innerHTML = ''; return; }
+
+    const l = loterias.find(x => x.nombre === juegoActual.loteria);
+    const j = l.juegos[juegoActual.indice];
+    const realJuego = datosRealesDe(j.nombre);
+    const fechaBuscadaTexto = isoAFormatoDDMMYYYY(valorISO); // 'DD-MM-YYYY', mismo formato que el historial real
+
+    if(!realJuego){
+      cajaResultado.innerHTML = `<div class="hint">Aún no hay historial real cargado para ${j.nombre}; no se puede buscar por fecha exacta todavía.</div>`;
+      return;
+    }
+
+    const coincidencias = realJuego.historial().filter(s => s.fecha === fechaBuscadaTexto);
+    if(coincidencias.length === 0){
+      cajaResultado.innerHTML = `<div class="hint">No hay sorteo registrado el ${fechaBuscadaTexto} en el historial de ${j.nombre}.</div>`;
+      return;
+    }
+
+    cajaResultado.innerHTML = coincidencias.map(s => `
+      <div class="draw-row">
+        <div class="draw-date">${s.fecha}</div>
+        <div class="balls">
+          ${s.numeros.map(n=>`<div class="ball" style="width:26px;height:26px;font-size:0.68rem;">${n.toString().padStart(2,'0')}</div>`).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Frecuencias, co-ocurrencia y afinidad del Súper Kino TV. Se calculan aquí como
+  // función (no como cálculo único al cargar) para poder RECALCULARLAS cada vez que
+  // se guarda un sorteo nuevo desde localStorage (ver integrarSorteoLocalEnKinoHistorial).
+  const frecuenciasKino = {};
+  const coOcurrenciaKino = {};
+  const avgPctKino = {};
+
+  function recalcularEstadisticasKino(){
+    if(typeof kinoHistorial === 'undefined') return;
+
+    for(let n=1; n<=80; n++) frecuenciasKino[n] = 0;
+    kinoHistorial.forEach(s => s.numeros.forEach(n => { frecuenciasKino[n] = (frecuenciasKino[n]||0) + 1; }));
+
+    for(let n=1;n<=80;n++){ coOcurrenciaKino[n] = {}; for(let m=1;m<=80;m++) coOcurrenciaKino[n][m] = 0; }
+    kinoHistorial.forEach(s => {
+      const nums = s.numeros;
+      nums.forEach(a => { nums.forEach(b => { if(a!==b) coOcurrenciaKino[a][b]++; }); });
+    });
+    for(let n=1;n<=80;n++){
+      let suma=0, cnt=0;
+      for(let m=1;m<=80;m++){
+        if(m===n) continue;
+        const apariciones = frecuenciasKino[n] || 0;
+        const pct = apariciones>0 ? (coOcurrenciaKino[n][m]/apariciones) : 0;
+        suma += pct; cnt++;
+      }
+      avgPctKino[n] = cnt>0 ? suma/cnt : 0;
+    }
+  }
+
+  // % de veces que, cuando salió N, también salió M en el mismo sorteo (historial real)
+  function pctConjuntaKino(n, m){
+    const apariciones = frecuenciasKino[n] || 0;
+    if(apariciones===0) return 0;
+    return (coOcurrenciaKino[n][m] || 0) / apariciones;
+  }
+
+  // Frecuencias reales de Quiniela Nacional (número -> veces que salió en cualquiera
+  // de las 3 posiciones, sobre los 199 sorteos reales cargados). Igual que con el
+  // Kino, se calcula como función para poder recalcularse si llegan sorteos nuevos.
+  const frecuenciasNacional = {};
+  function recalcularEstadisticasNacional(){
+    if(typeof nacionalHistorial === 'undefined') return;
+    for(let n=0; n<=99; n++) frecuenciasNacional[n] = 0;
+    nacionalHistorial.forEach(s => s.numeros.forEach(n => { frecuenciasNacional[n] = (frecuenciasNacional[n]||0) + 1; }));
+  }
+
+  // Registro de juegos con historial REAL cargado. Cualquier juego que aparezca aquí
+  // usa automáticamente sus propios datos (frecuencias, calientes/fríos, calendario
+  // buscable y el motor de sugerencias) en vez de los datos de ejemplo. Para agregar
+  // un nuevo juego con historial real en el futuro, solo hay que sumar una entrada.
+  const JUEGOS_REALES = {
+    "Súper Kino TV": {
+      historial: () => kinoHistorial,
+      frecuencias: () => frecuenciasKino,
+      rango: [1,80], cantidadNumeros: 10,
+      // Antes soportaba 3 métodos por separado (Anclas, Disparador, Post-Inercia)
+      // con un selector visible. Ahora, igual que el resto del sistema, usa un único
+      // método automático (Post-Inercia) sin pasos manuales ni selección visible.
+      modos: ['postinercia'],
+    },
+    "Quiniela Nacional": {
+      historial: () => nacionalHistorial,
+      frecuencias: () => frecuenciasNacional,
+      rango: [0,99], cantidadNumeros: 3,
+      // Un solo método automático: el motor de Frecuencia + Post-Inercia ya combina
+      // calientes/fríos, estructura del último sorteo y patrones históricos bajo un
+      // mismo set de reglas. Un solo botón ("Ver sugerencias"), sin pasos manuales.
+      modos: ['postinercia'],
+    },
+  };
+  function datosRealesDe(nombreJuego){ return JUEGOS_REALES[nombreJuego] || null; }
+
+  // Filtro de cohesión: cada número debe "coincidir" (estar por encima de su propio
+  // promedio histórico de co-ocurrencia) con al menos el 70% de los otros 9 de la jugada.
+  function cumpleEslabonCerrado(combo){
+    for(const n of combo){
+      const otros = combo.filter(x => x !== n);
+      if(otros.length === 0) continue;
+      let cumplidos = 0;
+      otros.forEach(m => { if(pctConjuntaKino(n,m) >= avgPctKino[n]) cumplidos++; });
+      if(cumplidos / otros.length < 0.70) return false;
+    }
+    return true;
+  }
+
+  // Índice de Afinidad Cruzada Global: promedio de coincidencia conjunta entre todos los
+  // pares de la combinación. Sirve para elegir, entre las válidas, la de mayor puntuación.
+  function afinidadGlobalKino(combo){
+    let suma=0, cnt=0;
+    combo.forEach(n => combo.forEach(m => { if(n!==m){ suma += pctConjuntaKino(n,m); cnt++; } }));
+    return cnt>0 ? suma/cnt : 0;
+  }
+
+  // Construye (en vez de adivinar al azar) una combinación que cumpla el Eslabón Cerrado:
+  // en cada paso agrega el número con más "enlaces" de cohesión con el grupo ya armado.
+  // Esto es necesario porque, al azar puro, cumplir la regla es prácticamente imposible
+  // (probado: menos de 1 en 200,000 combinaciones aleatorias la cumplen).
+  function construirEslabonCerrado(parAncla, cantidad, rango, maxIntentos=60){
+    for(let intento=0; intento<maxIntentos; intento++){
+      let grupo = [...parAncla];
+      let pool = [];
+      for(let n=rango[0]; n<=rango[1]; n++) if(!grupo.includes(n)) pool.push(n);
+      while(grupo.length < cantidad && pool.length > 0){
+        let mejorCand = null, mejorPuntaje = -1;
+        pool.forEach(c => {
+          let enlaces = 0;
+          grupo.forEach(g => {
+            if(pctConjuntaKino(c,g) >= avgPctKino[c]) enlaces++;
+            if(pctConjuntaKino(g,c) >= avgPctKino[g]) enlaces++;
+          });
+          const puntaje = enlaces + Math.random()*0.5; // ruido leve para variar entre sugerencias
+          if(puntaje > mejorPuntaje){ mejorPuntaje = puntaje; mejorCand = c; }
+        });
+        grupo.push(mejorCand);
+        pool = pool.filter(c => c !== mejorCand);
+      }
+      if(cumpleReglasCobertura(grupo, rango) && cumpleEslabonCerrado(grupo)){
+        return {combo: grupo, score: afinidadGlobalKino(grupo)};
+      }
+    }
+    return null;
+  }
+
+  // --- Regla de Continuidad Secuencial Predictiva (Efecto Disparador) — solo Kino ---
+  // Genera todas las combinaciones de tamaño k de un arreglo (usado para sacar
+  // parejas y tríos del último sorteo).
+  function combinaciones(arr, k){
+    const resultado = [];
+    function combinar(inicio, actual){
+      if(actual.length === k){ resultado.push([...actual]); return; }
+      for(let i=inicio;i<arr.length;i++){
+        actual.push(arr[i]);
+        combinar(i+1, actual);
+        actual.pop();
+      }
+    }
+    combinar(0, []);
+    return resultado;
+  }
+
+  // Busca en TODO el historial en qué sorteos aparecieron juntos todos los
+  // números de un grupo (pareja o trío), y devuelve los índices de esos sorteos.
+  function indicesDondeApareceGrupo(grupo){
+    const indices = [];
+    kinoHistorial.forEach((s, idx) => {
+      if(grupo.every(n => s.numeros.includes(n))) indices.push(idx);
+    });
+    return indices;
+  }
+
+  // Identifica, dentro del último sorteo, las parejas y tríos con mayor "densidad"
+  // histórica (los que más veces han salido juntos en todo el historial).
+  function bloquesClaveUltimoSorteo(numerosUltimoSorteo, topN=5){
+    const evaluarGrupos = (tamano) => {
+      return combinaciones(numerosUltimoSorteo, tamano)
+        .map(grupo => ({grupo, indices: indicesDondeApareceGrupo(grupo)}))
+        .filter(b => b.indices.length > 0)
+        .sort((a,b) => b.indices.length - a.indices.length)
+        .slice(0, topN);
+    };
+    return [...evaluarGrupos(2), ...evaluarGrupos(3)];
+  }
+
+  // Corre el algoritmo completo: toma el último sorteo real cargado, identifica sus
+  // bloques clave, rastrea el sorteo T+1 de cada aparición histórica de esos bloques,
+  // y calcula qué números "reaccionan" con mayor frecuencia después. El más frecuente
+  // se vuelve la Semilla Principal.
+  function calcularEfectoDisparador(){
+    if(!kinoHistorial || kinoHistorial.length < 2) return null;
+    const ultimoSorteo = kinoHistorial[kinoHistorial.length - 1];
+    const bloquesClave = bloquesClaveUltimoSorteo(ultimoSorteo.numeros, 5);
+    if(bloquesClave.length === 0) return null;
+
+    const conteoReaccion = {};
+    for(let n=1;n<=80;n++) conteoReaccion[n] = 0;
+    let totalMuestras = 0;
+
+    bloquesClave.forEach(b => {
+      b.indices.forEach(idx => {
+        if(idx < kinoHistorial.length - 1){ // debe existir un sorteo siguiente
+          kinoHistorial[idx+1].numeros.forEach(n => conteoReaccion[n]++);
+          totalMuestras++;
+        }
+      });
+    });
+    if(totalMuestras === 0) return null;
+
+    const ranking = Object.entries(conteoReaccion)
+      .map(([n,veces]) => ({numero:Number(n), veces, pct: veces/totalMuestras}))
+      .sort((a,b) => b.veces - a.veces);
+
+    return {
+      sorteoBase: ultimoSorteo,
+      bloquesClave,
+      totalMuestras,
+      ranking,
+      semilla: ranking.slice(0,3).map(r => r.numero)
+    };
+  }
+
+  // Genera las 3 sugerencias del modo Efecto Disparador: usa la Semilla Principal
+  // (creciendo de 1 a 3 números por sugerencia) y completa cada combinación aplicando
+  // el Eslabón Cerrado y las reglas de estructura natural, igual que en modo manual.
+  function generarPorEfectoDisparador(l, j, cantJugada){
+    const cont = document.getElementById('combos');
+    const resultado = calcularEfectoDisparador();
+    if(!resultado){
+      cont.innerHTML = `<div class="hint">Aún no hay suficientes coincidencias históricas de los bloques del último sorteo para aplicar el Efecto Disparador.</div>`;
+      return;
+    }
+
+    const topReaccion = resultado.ranking.slice(0,8)
+      .map(r => `${r.numero.toString().padStart(2,'0')} (${(r.pct*100).toFixed(0)}%)`).join(', ');
+    const mejorBloque = resultado.bloquesClave[0];
+
+    let encabezado = `<strong>Regla de Continuidad Secuencial Predictiva (Efecto Disparador)</strong>`;
+    encabezado += `<br><span style="opacity:0.7;">Sorteo base: ${resultado.sorteoBase.fecha}. `;
+    encabezado += `Bloque clave más denso: [${mejorBloque.grupo.map(n=>n.toString().padStart(2,'0')).join('-')}], `;
+    encabezado += `apareció junto ${mejorBloque.indices.length} veces en el historial.<br>`;
+    encabezado += `Muestras T+1 analizadas: ${resultado.totalMuestras} sorteos posteriores a los ${resultado.bloquesClave.length} bloques clave detectados.<br>`;
+    encabezado += `Números Reacción (top): ${topReaccion}.<br>`;
+    encabezado += `Semilla Principal: ${resultado.semilla.map(n=>n.toString().padStart(2,'0')).join(', ')}.</span>`;
+    cont.innerHTML = `<div class="hint" style="margin-bottom:10px;">${encabezado}</div>`;
+
+    const semillasPorCombo = [
+      resultado.semilla.slice(0,1),
+      resultado.semilla.slice(0,2),
+      resultado.semilla.slice(0,3),
+    ];
+
+    semillasPorCombo.forEach((semilla, i) => {
+      const candidatosValidos = [];
+      for(let k=0;k<6;k++){
+        const r = construirEslabonCerrado(semilla, cantJugada, j.rango, 60);
+        if(r) candidatosValidos.push(r);
+      }
+      let todos, nota;
+      if(candidatosValidos.length > 0){
+        candidatosValidos.sort((a,b)=>b.score-a.score);
+        todos = candidatosValidos[0].combo;
+        nota = `Semilla: ${semilla.map(n=>n.toString().padStart(2,'0')).join(', ')}. Cumple Eslabón Cerrado (70%). Afinidad cruzada: ${(candidatosValidos[0].score*100).toFixed(1)}%`;
+      } else {
+        const relleno = numerosPonderados(semilla, cantJugada - semilla.length, frecuenciasKino, j.rango[0], j.rango[1]);
+        todos = [...semilla, ...relleno].slice(0, cantJugada);
+        nota = `Semilla: ${semilla.map(n=>n.toString().padStart(2,'0')).join(', ')}. No se logró cumplir el Eslabón Cerrado; se completó por frecuencia real ponderada.`;
+      }
+
+      const div = document.createElement('div');
+      div.className = 'combo';
+      div.innerHTML = `
+        <div class="idx">${i+1}</div>
+        <div class="balls">
+          ${todos.map(n=>`<div class="ball ${semilla.includes(n)?'anchor':''}">${n.toString().padStart(2,'0')}</div>`).join('')}
+        </div>
+        <div class="juego-desc" style="margin-top:6px;">${nota}</div>
+      `;
+      cont.appendChild(div);
+    });
+  }
+
+  // ============================================================
+  // MOTOR LÓGICO AUTÓNOMO: Frecuencia, Post-Inercia y Control de Temperatura
+  // (genérico, multi-lotería, con ponderación por reciencia y umbral de confianza)
+  // ------------------------------------------------------------
+  // A diferencia del Eslabón Cerrado / Efecto Disparador (pensados específicamente
+  // para el Kino), este motor no asume nada sobre la lotería: solo necesita un
+  // `historial` (array de {fecha, numeros}) y un `config` = { rango:[min,max],
+  // cantidadNumeros }. Por eso puede reutilizarse para Loto Más, Loto Pool,
+  // Mega Lotto, etc. en cuanto exista un historial real para ese juego (hoy por
+  // hoy, el único historial real cargado en el prototipo es el del Kino).
+  // ============================================================
+
+  /** Paridad, décadas ocupadas/vacías y suma total de un sorteo (una sola jugada). */
+  function calcularMetricasSorteo(numeros, rango){
+    const pares = numeros.filter(n => n % 2 === 0).length;
+    const impares = numeros.length - pares;
+    const sumaTotal = numeros.reduce((a,b) => a+b, 0);
+    const [min, max] = rango;
+    const decenas = {};
+    for(let d = Math.ceil(min/10); d <= Math.ceil(max/10); d++) decenas[d] = 0;
+    numeros.forEach(n => { const d = Math.ceil(n/10); decenas[d] = (decenas[d]||0) + 1; });
+    const decenasVacias = Object.keys(decenas).map(Number).filter(d => decenas[d] === 0);
+    const decenasOcupadas = Object.keys(decenas).map(Number).filter(d => decenas[d] > 0);
+    return {
+      numeros: [...numeros].sort((a,b)=>a-b),
+      pares, impares, ratioParidad: `${pares}:${impares}`,
+      sumaTotal, decenas, decenasVacias, decenasOcupadas,
+    };
+  }
+
+  /** Rango de suma "estándar" esperado estadísticamente para este juego (media ± 20%). */
+  function calcularRangoSumaEstandar(config){
+    const { rango, cantidadNumeros } = config;
+    const [min, max] = rango;
+    const media = cantidadNumeros * (min + max) / 2;
+    const margen = media * 0.2;
+    return { media, min: Math.round(media - margen), max: Math.round(media + margen) };
+  }
+
+  function indicesDondeApareceGrupoGenerico(historial, grupo){
+    const indices = [];
+    historial.forEach((s, idx) => { if(grupo.every(n => s.numeros.includes(n))) indices.push(idx); });
+    return indices;
+  }
+
+  function rankearNucleosPorReincidencia(historial, numerosSorteo, tamanoGrupo, topN){
+    return combinaciones(numerosSorteo, tamanoGrupo)
+      .map(grupo => ({grupo, indices: indicesDondeApareceGrupoGenerico(historial, grupo)}))
+      .filter(b => b.indices.length > 0)
+      .sort((a,b) => b.indices.length - a.indices.length)
+      .slice(0, topN);
+  }
+
+  // --- Utilidades de fecha para la ponderación por reciencia ---
+  /** Interpreta "dd-mm-yyyy" (formato de kinoHistorial), "yyyy-mm-dd" o un objeto Date. */
+  function parsearFechaFlexible(fecha){
+    if(fecha instanceof Date) return fecha;
+    if(typeof fecha === 'string'){
+      const ddmmyyyy = fecha.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+      if(ddmmyyyy){ const [,d,m,y] = ddmmyyyy; return new Date(Number(y), Number(m)-1, Number(d)); }
+      const iso = fecha.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if(iso){ const [,y,m,d] = iso; return new Date(Number(y), Number(m)-1, Number(d)); }
+    }
+    return null; // fechas simuladas u otros formatos no reconocidos: se ignora la reciencia
+  }
+
+  function diferenciaEnMeses(fechaA, fechaB){
+    if(!fechaA || !fechaB) return null;
+    return Math.abs((fechaB.getFullYear()-fechaA.getFullYear())*12 + (fechaB.getMonth()-fechaA.getMonth()));
+  }
+
+  /** Peso de coincidencia según antigüedad: últimos 6 meses = máximo peso, decae después. */
+  function pesoPorReciencia(fechaSorteo, fechaBase){
+    const meses = diferenciaEnMeses(parsearFechaFlexible(fechaSorteo), parsearFechaFlexible(fechaBase));
+    if(meses === null) return 1; // fecha no interpretable: no se penaliza ni se beneficia
+    if(meses <= 6) return 1.0;
+    if(meses <= 12) return 0.75;
+    if(meses <= 24) return 0.5;
+    return 0.3;
+  }
+
+  // --- FASE 1: Radiografía y desglose del último sorteo ---
+  function analizarUltimoSorteo(sorteo, config, historial=[]){
+    const metricas = calcularMetricasSorteo(sorteo.numeros, config.rango);
+    const sumaEstandar = calcularRangoSumaEstandar(config);
+    const sumaEnRango = metricas.sumaTotal >= sumaEstandar.min && metricas.sumaTotal <= sumaEstandar.max;
+    const nucleos = historial.length ? [
+      ...rankearNucleosPorReincidencia(historial, sorteo.numeros, 2, 5),
+      ...rankearNucleosPorReincidencia(historial, sorteo.numeros, 3, 5),
+    ] : [];
+    return { sorteoBase: sorteo, metricas, sumaEstandar, sumaEnRango, nucleos, config };
+  }
+
+  // --- FASE 2: Búsqueda de "sorteos espejo" con ponderación por reciencia ---
+  // radiografia = lo que devuelve analizarUltimoSorteo() (trae `config` adentro).
+  function buscarSorteosEspejo(radiografia, historial, pesoReciencia=true, topN=3){
+    const config = radiografia.config;
+    const ultimoIdx = historial.length - 1;
+    const candidatos = [];
+    for(let idx = 0; idx < ultimoIdx; idx++){
+      const sorteo = historial[idx];
+      const metricasSorteo = calcularMetricasSorteo(sorteo.numeros, config.rango);
+
+      let coincidenciaBloques = 0;
+      radiografia.nucleos.forEach(n => { if(n.grupo.every(x => sorteo.numeros.includes(x))) coincidenciaBloques++; });
+      const coincidenciaNorm = radiografia.nucleos.length > 0 ? coincidenciaBloques / radiografia.nucleos.length : 0;
+
+      const vaciasA = new Set(radiografia.metricas.decenasVacias);
+      const vaciasB = new Set(metricasSorteo.decenasVacias);
+      const interseccion = [...vaciasA].filter(d => vaciasB.has(d)).length;
+      const union = new Set([...vaciasA, ...vaciasB]).size;
+      const similitudDecenas = union > 0 ? interseccion/union : 1;
+
+      const difParidad = Math.abs(radiografia.metricas.pares - metricasSorteo.pares);
+      const similitudParidad = 1 - (difParidad / radiografia.metricas.numeros.length);
+
+      const puntajeEstructural = (coincidenciaNorm*0.5) + (similitudDecenas*0.3) + (similitudParidad*0.2);
+      const peso = pesoReciencia ? pesoPorReciencia(sorteo.fecha, radiografia.sorteoBase.fecha) : 1;
+
+      candidatos.push({
+        idx, sorteo, metricasSorteo, coincidenciaBloques, similitudDecenas, similitudParidad,
+        puntajeEstructural, peso, puntaje: puntajeEstructural * peso,
+      });
+    }
+    candidatos.sort((a,b) => b.puntaje - a.puntaje);
+    const espejos = candidatos.slice(0, topN);
+    espejos.config = config; // se adjunta para que obtenerEfectoPostInercia no necesite recibirlo aparte
+    return espejos;
+  }
+
+  /** Estado de un número frente a los últimos 8-10 sorteos: caliente / templado / frío. */
+  function calcularTemperatura(numero, historialReciente){
+    const apariciones = historialReciente.filter(s => s.numeros.includes(numero)).length;
+    const pct = historialReciente.length > 0 ? apariciones/historialReciente.length : 0;
+    let estado = 'templado';
+    if(pct > 0.5) estado = 'caliente';
+    else if(apariciones === 0) estado = 'frio';
+    return { numero, apariciones, pct, estado };
+  }
+
+  // --- FASE 3: Post-Inercia + Control de Temperatura ---
+  // sorteosEspejo = lo que devuelve buscarSorteosEspejo() (trae `.config` adentro).
+  function obtenerEfectoPostInercia(sorteosEspejo, historial, historialReciente10){
+    const config = sorteosEspejo.config;
+    const [min, max] = config.rango;
+    const conteoNumeros = {};
+    for(let n=min; n<=max; n++) conteoNumeros[n] = 0;
+    const conteoDecenaReactivada = {};
+    let paresTotal = 0, imparesTotal = 0, muestras = 0;
+    const siguientes = [];
+
+    sorteosEspejo.forEach(e => {
+      if(e.idx < historial.length - 1){
+        const siguiente = historial[e.idx + 1];
+        siguientes.push({ espejo: e, siguiente });
+        // los números del sorteo siguiente a un espejo más parecido/reciente pesan más
+        siguiente.numeros.forEach(n => { conteoNumeros[n] = (conteoNumeros[n]||0) + e.peso; });
+        const metricasSig = calcularMetricasSorteo(siguiente.numeros, config.rango);
+        paresTotal += metricasSig.pares * e.peso;
+        imparesTotal += metricasSig.impares * e.peso;
+        e.metricasSorteo.decenasVacias.forEach(d => {
+          if(metricasSig.decenas[d] > 0) conteoDecenaReactivada[d] = (conteoDecenaReactivada[d]||0) + e.peso;
+        });
+        muestras += e.peso;
+      }
+    });
+    if(muestras === 0) return null;
+
+    let rankingImanes = Object.entries(conteoNumeros)
+      .map(([n,veces]) => ({ numero:Number(n), veces, pct: veces/muestras }))
+      .sort((a,b) => b.veces - a.veces);
+
+    // Filtro de Temperatura: cruce con los últimos 8-10 sorteos reales del historial.
+    // Caliente (>50% de esos sorteos) mantiene/gana prioridad; frío (0 apariciones
+    // recientes, "congelado") se le reduce ligeramente la ponderación a favor del
+    // siguiente acompañante más afín (se logra simplemente re-ordenando por pctAjustado).
+    rankingImanes = rankingImanes.map(im => {
+      const temperatura = calcularTemperatura(im.numero, historialReciente10 || []);
+      let pctAjustado = im.pct;
+      if(temperatura.estado === 'caliente') pctAjustado = im.pct * 1.15;
+      else if(temperatura.estado === 'frio') pctAjustado = im.pct * 0.6;
+      return { ...im, temperatura, pctAjustado };
+    }).sort((a,b) => b.pctAjustado - a.pctAjustado);
+
+    const sombra = rankingImanes.slice(0,5).map(im => {
+      const vecinos = [im.numero-1, im.numero+1].filter(v => v>=min && v<=max);
+      const apoyoVecinos = vecinos.map(v => {
+        const veces = siguientes.filter(s => s.siguiente.numeros.includes(v)).length;
+        return { numero:v, pct: veces/siguientes.length };
+      });
+      return { numero: im.numero, vecinos: apoyoVecinos };
+    });
+
+    const decadaRebote = Object.entries(conteoDecenaReactivada)
+      .map(([d,veces]) => ({ decena:Number(d), pct: veces/muestras }))
+      .sort((a,b) => b.pct - a.pct)[0] || null;
+
+    const dominanciaPar = paresTotal >= imparesTotal;
+    const totalParidad = paresTotal + imparesTotal;
+
+    return {
+      muestras, rankingImanes, sombra, decadaRebote,
+      polaridad: { dominante: dominanciaPar ? 'PAR' : 'IMPAR', pct: totalParidad>0 ? Math.max(paresTotal,imparesTotal)/totalParidad : 0 },
+    };
+  }
+
+  function rangoNumerico([min,max]){
+    const arr = [];
+    for(let n=min; n<=max; n++) arr.push(n);
+    return arr;
+  }
+
+  function comboYaExisteEnHistorial(historial, combo){
+    const set = new Set(combo);
+    return historial.some(s => s.numeros.length === combo.length && s.numeros.every(n => set.has(n)));
+  }
+
+  // Cobertura general: solo evita el extremo de que TODOS los números caigan en
+  // una sola década (estructuralmente anómalo); no exige un mínimo arbitrario de
+  // décadas distintas, porque los números imán reales pueden estar cerca entre sí.
+  function cumpleCoberturaGeneral(combo, rango, cantidad){
+    const conteoDecena = {};
+    combo.forEach(n => { const d = Math.ceil(n/10); conteoDecena[d] = (conteoDecena[d]||0)+1; });
+    if(Object.values(conteoDecena).some(c => c === cantidad && cantidad > 2)) return false;
+    return true;
+  }
+
+  // Verifica las reglas de "Consistencia Estructural": debe contener al menos uno
+  // de los números imán principales (ya ajustados por temperatura) y acercarse a
+  // la paridad dominante detectada en la Fase 3.
+  function cumpleConsistenciaEstructural(combo, postInercia){
+    const imanesTop = postInercia.rankingImanes.slice(0,3).map(r => r.numero);
+    const tieneIman = combo.some(n => imanesTop.includes(n));
+    if(!tieneIman) return false;
+
+    const cantidad = combo.length;
+    const pares = combo.filter(n => n % 2 === 0).length;
+    const paresIdeal = postInercia.polaridad.dominante === 'PAR' ? Math.ceil(cantidad*0.6) : Math.floor(cantidad*0.4);
+    const tolerancia = Math.max(2, Math.round(cantidad*0.2));
+    if(Math.abs(pares - paresIdeal) > tolerancia) return false;
+
+    return true;
+  }
+
+  // Modo de Respaldo Lógico: cuando el último sorteo es atípico (poca similitud
+  // con el historial), no se fuerza ningún patrón. Se genera con distribución
+  // estándar equilibrada (paridad ~50/50) y suma dentro del rango estadístico normal.
+  function generarModoRespaldo(historial, config, maxIntentos=200){
+    const { rango, cantidadNumeros } = config;
+    const sumaEstandar = calcularRangoSumaEstandar(config);
+    const paresIdeal = Math.round(cantidadNumeros/2);
+
+    for(let intento=0; intento<maxIntentos; intento++){
+      const disponibles = rangoNumerico(rango);
+      for(let i = disponibles.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [disponibles[i], disponibles[j]] = [disponibles[j], disponibles[i]];
+      }
+      let combo = new Set();
+      for(const n of disponibles){
+        if(combo.size >= cantidadNumeros) break;
+        const esPar = n % 2 === 0;
+        const paresActuales = [...combo].filter(x=>x%2===0).length;
+        const faltan = cantidadNumeros - combo.size;
+        if(faltan > 1){
+          if(esPar && paresActuales >= paresIdeal+1) continue;
+          if(!esPar && (combo.size-paresActuales) >= (cantidadNumeros-paresIdeal)+1) continue;
+        }
+        combo.add(n);
+      }
+      const comboFinal = [...combo];
+      if(comboFinal.length < cantidadNumeros) continue;
+      const suma = comboFinal.reduce((a,b)=>a+b,0);
+      if(suma < sumaEstandar.min || suma > sumaEstandar.max) continue;
+      if(comboYaExisteEnHistorial(historial, comboFinal)) continue; // Cero Copias aplica también en respaldo
+
+      return { combo: comboFinal.sort((a,b)=>a-b), modo: 'respaldo', suma, sumaEstandar };
+    }
+    return null;
+  }
+
+  // Muestreo SIN reposición, ponderado por pctAjustado: útil para juegos con muy
+  // pocos números por sorteo (ej. una quiniela de 3), donde tomar siempre los mismos
+  // N imanes fijos produce la MISMA combinación en cada intento y, si esa combinación
+  // exacta ya salió en el historial, la Regla de Oro "Cero Copias" la rechazaría
+  // siempre — dejando la sugerencia sin resultado. Con muestreo ponderado, los
+  // números más fuertes siguen siendo los más probables, pero cada intento puede
+  // variar, dándole al motor margen real para cumplir todas las reglas sin excepción.
+  function muestrearImanesPonderado(lista, cantidad){
+    const disponibles = lista.slice();
+    const elegidos = [];
+    while(elegidos.length < cantidad && disponibles.length > 0){
+      const pesoTotal = disponibles.reduce((acc,r) => acc + Math.max(0.0001, r.pctAjustado), 0);
+      let r = Math.random() * pesoTotal;
+      let idx = 0;
+      for(; idx < disponibles.length; idx++){
+        r -= Math.max(0.0001, disponibles[idx].pctAjustado);
+        if(r <= 0) break;
+      }
+      idx = Math.min(idx, disponibles.length - 1);
+      elegidos.push(disponibles[idx]);
+      disponibles.splice(idx, 1);
+    }
+    return elegidos;
+  }
+
+  // --- FASE 4: Generación inteligente con Umbral de Confianza y las Reglas de Oro ---
+  // parametros = { historial, config, radiografia, sorteosEspejo, postInercia, maxIntentos }
+  function generarCombinacionOptimizada(parametros){
+    const { historial, config, radiografia, sorteosEspejo, postInercia, senalExtra, maxIntentos=200 } = parametros;
+    const { rango, cantidadNumeros } = config;
+
+    // Umbral de Confianza: si el mejor sorteo espejo tiene menos de 50% de parecido,
+    // el último sorteo fue "atípico" — no se fuerza el patrón, se activa el respaldo.
+    const mejorPuntaje = (sorteosEspejo && sorteosEspejo.length > 0) ? sorteosEspejo[0].puntaje : 0;
+    if(mejorPuntaje < 0.5 || !postInercia){
+      const respaldo = generarModoRespaldo(historial, config, maxIntentos);
+      if(respaldo) return respaldo;
+      // si ni el respaldo encuentra una combinación válida, no hay nada más que ofrecer en este intento
+      return null;
+    }
+
+    const semillaCount = Math.min(3, cantidadNumeros);
+    const quiereParDominante = postInercia.polaridad.dominante === 'PAR';
+
+    if(cantidadNumeros <= 3){
+      // ---------------------------------------------------------------------
+      // Sorteos de 3 números o menos (ej. Quiniela Nacional): SIN CAMBIOS.
+      // ---------------------------------------------------------------------
+      const poolImanes = postInercia.rankingImanes.slice(0, Math.min(10, postInercia.rankingImanes.length));
+      const semillaBase = muestrearImanesPonderado(poolImanes, semillaCount).map(r => r.numero);
+      const vecinosApoyo = postInercia.sombra
+        .flatMap(s => s.vecinos)
+        .filter(v => v.pct >= 0.3)
+        .map(v => v.numero)
+        .filter(n => !semillaBase.includes(n));
+
+      for(let intento=0; intento<maxIntentos; intento++){
+        let combo = new Set(semillaBase);
+        for(const v of vecinosApoyo){ if(combo.size < cantidadNumeros) combo.add(v); }
+
+        if(postInercia.decadaRebote && combo.size < cantidadNumeros){
+          const decena = postInercia.decadaRebote.decena;
+          const candidatosDecena = rangoNumerico(rango).filter(n => Math.ceil(n/10)===decena && !combo.has(n));
+          if(candidatosDecena.length > 0) combo.add(candidatosDecena[Math.floor(Math.random()*candidatosDecena.length)]);
+        }
+
+        const disponibles = rangoNumerico(rango).filter(n => !combo.has(n));
+        for(let i = disponibles.length - 1; i > 0; i--){
+          const k = Math.floor(Math.random() * (i + 1));
+          [disponibles[i], disponibles[k]] = [disponibles[k], disponibles[i]];
+        }
+        disponibles.sort((a,b) => {
+          const pa = postInercia.rankingImanes.find(r=>r.numero===a)?.pctAjustado || 0;
+          const pb = postInercia.rankingImanes.find(r=>r.numero===b)?.pctAjustado || 0;
+          return pb - pa;
+        });
+
+        for(const n of disponibles){
+          if(combo.size >= cantidadNumeros) break;
+          const esPar = n % 2 === 0;
+          const paresActuales = [...combo].filter(x => x%2===0).length;
+          const faltan = cantidadNumeros - combo.size;
+          if(faltan > 1){
+            const paresIdeal = quiereParDominante ? Math.ceil(cantidadNumeros*0.6) : Math.floor(cantidadNumeros*0.4);
+            if(esPar && paresActuales >= paresIdeal) continue;
+            if(!esPar && (combo.size-paresActuales) >= (cantidadNumeros-paresIdeal)) continue;
+          }
+          combo.add(n);
+        }
+
+        const comboFinal = Array.from(combo).slice(0, cantidadNumeros);
+        if(comboFinal.length < cantidadNumeros) continue;
+        if(comboYaExisteEnHistorial(historial, comboFinal)) continue; // Regla de Oro: Cero Copias
+        if(!cumpleCoberturaGeneral(comboFinal, rango, cantidadNumeros)) continue;
+        if(!cumpleConsistenciaEstructural(comboFinal, postInercia)) continue; // Regla de Oro: Consistencia Estructural
+
+        return {
+          combo: comboFinal.sort((a,b)=>a-b), modo: 'post-inercia', semilla: semillaBase, vecinosApoyo,
+          decadaRebote: postInercia.decadaRebote, polaridad: postInercia.polaridad,
+        };
+      }
+      return null;
+    }
+
+    // -------------------------------------------------------------------------
+    // Sorteos de 4 números en adelante (ej. Súper Kino TV, 10 números): antes la
+    // semilla eran siempre los mismos 3 imanes fijos y el relleno se ordenaba de
+    // forma 100% determinista por pctAjustado -- por eso las 3 tarjetas salían
+    // idénticas. Ahora cada llamada varía de verdad (semilla ponderada de un pool
+    // más amplio, vecinos en orden barajado, relleno por muestreo ponderado sin
+    // reposición), sin dejar de favorecer los números más calientes/con más
+    // afinidad: las mismas reglas y criterios de siempre, solo que ya no producen
+    // una única salida fija.
+    // -------------------------------------------------------------------------
+    // Semilla: se combinan DOS señales del historial real, no solo una.
+    // 1) postInercia.rankingImanes: números "calientes" según parentesco con
+    //    sorteos espejo + temperatura reciente (motor de siempre).
+    // 2) senalExtra (Efecto Disparador, solo Kino): números que más "reaccionan"
+    //    justo después de los bloques (parejas/tríos) más densos del último
+    //    sorteo. Si un número aparece fuerte en ambas señales, su peso sube;
+    //    si no hay senalExtra (ej. Quiniela Nacional, o si el Kino no tiene
+    //    suficiente historial de coincidencias todavía), el resultado es
+    //    idéntico al de antes.
+    const numerosCandidatos = new Set(postInercia.rankingImanes.slice(0, Math.min(20, postInercia.rankingImanes.length)).map(r => r.numero));
+    if(senalExtra){
+      Object.keys(senalExtra)
+        .map(Number)
+        .sort((a,b) => senalExtra[b] - senalExtra[a])
+        .slice(0, 10)
+        .forEach(n => numerosCandidatos.add(n));
+    }
+    const poolImanes = [...numerosCandidatos].map(n => {
+      const base = postInercia.rankingImanes.find(r => r.numero === n);
+      const pctBase = base ? base.pctAjustado : 0.0001;
+      const pctReaccion = (senalExtra && senalExtra[n]) || 0;
+      return { numero: n, pctAjustado: pctBase * (1 + pctReaccion) };
+    });
+    const semillaBase = muestrearImanesPonderado(poolImanes, semillaCount).map(r => r.numero);
+
+    const vecinosApoyo = postInercia.sombra
+      .flatMap(s => s.vecinos)
+      .filter(v => v.pct >= 0.3)
+      .map(v => v.numero)
+      .filter(n => !semillaBase.includes(n));
+    for(let i = vecinosApoyo.length - 1; i > 0; i--){
+      const k = Math.floor(Math.random() * (i + 1));
+      [vecinosApoyo[i], vecinosApoyo[k]] = [vecinosApoyo[k], vecinosApoyo[i]];
+    }
+
+    for(let intento=0; intento<maxIntentos; intento++){
+      let combo = new Set(semillaBase); // la semilla (3 imanes) siempre entra completa
+      const decenaDe0 = n => Math.ceil(n/10);
+      const contarDecena0 = d => [...combo].filter(x => decenaDe0(x)===d).length;
+      const crearia3Consecutivos0 = n =>
+        (combo.has(n-1) && combo.has(n-2)) || (combo.has(n+1) && combo.has(n+2)) || (combo.has(n-1) && combo.has(n+1));
+
+      // Los vecinos de afinidad y la década de rebote también deben respetar el
+      // tope de 4 por decena y el máximo de 2 consecutivos -- si no, pueden
+      // llenar todo el combo antes de que la Fase A/B (más abajo) tenga
+      // oportunidad de repartir entre más decenas.
+      for(const v of vecinosApoyo){
+        if(combo.size >= cantidadNumeros) break;
+        if(combo.has(v)) continue;
+        if(contarDecena0(decenaDe0(v)) >= 4) continue;
+        if(crearia3Consecutivos0(v)) continue;
+        combo.add(v);
+      }
+
+      if(postInercia.decadaRebote && combo.size < cantidadNumeros){
+        const decena = postInercia.decadaRebote.decena;
+        const candidatosDecena = rangoNumerico(rango).filter(n => Math.ceil(n/10)===decena && !combo.has(n) && !crearia3Consecutivos0(n));
+        if(candidatosDecena.length > 0 && contarDecena0(decena) < 4) combo.add(candidatosDecena[Math.floor(Math.random()*candidatosDecena.length)]);
+      }
+
+      // Relleno por muestreo ponderado SIN reposición (mismo criterio de "más
+      // caliente = más probable", pero con orden variable en cada llamada).
+      const disponibles = rangoNumerico(rango).filter(n => !combo.has(n));
+      const disponiblesConPeso = disponibles.map(n => ({
+        numero: n,
+        pctAjustado: postInercia.rankingImanes.find(r=>r.numero===n)?.pctAjustado || 0.0001,
+      }));
+      const ordenPonderado = muestrearImanesPonderado(disponiblesConPeso, disponiblesConPeso.length);
+
+      const decenaDe = n => Math.ceil(n/10);
+      const contarDecena = d => [...combo].filter(x => decenaDe(x)===d).length;
+      // Evita crear un trío de números consecutivos (regla: máx. 2 seguidos),
+      // sin importar si "n" cae al inicio, en medio o al final de la racha.
+      const crearia3Consecutivos = n =>
+        (combo.has(n-1) && combo.has(n-2)) || (combo.has(n+1) && combo.has(n+2)) || (combo.has(n-1) && combo.has(n+1));
+
+      // FASE A -- Estructura Natural de la Máquina, cobertura de decenas: la
+      // semilla y los vecinos de afinidad pueden quedar concentrados en pocas
+      // decenas, así que antes del relleno "normal" se prioriza sumar al menos
+      // un número de cada decena todavía no representada (hasta cubrir 4),
+      // respetando siempre el tope de 4 por decena y el máximo de consecutivos.
+      for(const cand of ordenPonderado){
+        if(combo.size >= cantidadNumeros) break;
+        const decenasActuales = new Set([...combo].map(decenaDe));
+        if(decenasActuales.size >= 4) break;
+        const n = cand.numero;
+        if(combo.has(n)) continue;
+        const d = decenaDe(n);
+        if(decenasActuales.has(d)) continue; // en esta fase interesan decenas nuevas
+        if(contarDecena(d) >= 4) continue;
+        if(crearia3Consecutivos(n)) continue;
+        combo.add(n);
+      }
+
+      // FASE B -- relleno general: mismo criterio de siempre (más caliente = más
+      // probable), pero ya respetando también el tope de 4 por decena y el
+      // máximo de 2 consecutivos seguidos, además de la paridad objetivo.
+      for(const cand of ordenPonderado){
+        if(combo.size >= cantidadNumeros) break;
+        const n = cand.numero;
+        if(combo.has(n)) continue;
+        const d = decenaDe(n);
+        if(contarDecena(d) >= 4) continue;
+        if(crearia3Consecutivos(n)) continue;
+
+        const esPar = n % 2 === 0;
+        const paresActuales = [...combo].filter(x => x%2===0).length;
+        const faltan = cantidadNumeros - combo.size;
+        if(faltan > 1){
+          const paresIdeal = quiereParDominante ? Math.ceil(cantidadNumeros*0.6) : Math.floor(cantidadNumeros*0.4);
+          if(esPar && paresActuales >= paresIdeal) continue;
+          if(!esPar && (combo.size-paresActuales) >= (cantidadNumeros-paresIdeal)) continue;
+        }
+        combo.add(n);
+      }
+
+      const comboFinal = Array.from(combo).slice(0, cantidadNumeros);
+      if(comboFinal.length < cantidadNumeros) continue;
+      if(comboYaExisteEnHistorial(historial, comboFinal)) continue; // Regla de Oro: Cero Copias
+      if(!cumpleCoberturaGeneral(comboFinal, rango, cantidadNumeros)) continue;
+      if(!cumpleConsistenciaEstructural(comboFinal, postInercia)) continue; // Regla de Oro: Consistencia Estructural
+      // Estructura Natural de la Máquina: ≥4 decenas distintas, máx. 4 números por
+      // decena, máx. 2 consecutivos seguidos, balance par/impar entre 3/7 y 7/3, y
+      // rechazo de patrones rígidos (escaleras, saltos constantes). Antes solo se
+      // aplicaba en el flujo manual/Efecto Disparador -- faltaba aquí, en el motor
+      // que realmente genera las sugerencias del Kino hoy (Post-Inercia).
+      if(!cumpleReglasCobertura(comboFinal, rango)) continue;
+
+      return {
+        combo: comboFinal.sort((a,b)=>a-b), modo: 'post-inercia', semilla: semillaBase, vecinosApoyo,
+        decadaRebote: postInercia.decadaRebote, polaridad: postInercia.polaridad,
+      };
+    }
+    return null;
+  }
+
+  // --- Diversidad de sugerencias para sorteos de 4 números en adelante -------------
+  // Motivo: en sorteos con 4+ números, la "semilla" de imanes más fuertes es fija
+  // (ver generarCombinacionOptimizada), así que pedir 1 combinación óptima varias
+  // veces seguidas tiende a devolver siempre la misma. Los sorteos de 3 números o
+  // menos NO pasan por aquí: ya varían por muestreo ponderado y se dejan intactos.
+
+  // 1) Piscina de candidatas: se generan varias combinaciones válidas (cumplen las
+  // mismas Reglas de Oro de siempre) y se descartan las que salgan repetidas.
+  function generarPoolCandidatas(parametrosBase, cantidadDeseada=20, intentosMax=80){
+    const pool = [];
+    const vistos = new Set();
+    let intentos = 0;
+    while(pool.length < cantidadDeseada && intentos < intentosMax){
+      const r = generarCombinacionOptimizada(parametrosBase);
+      intentos++;
+      if(!r) continue;
+      const clave = r.combo.join(',');
+      if(vistos.has(clave)) continue;
+      vistos.add(clave);
+      pool.push(r);
+    }
+    return pool;
+  }
+
+  // 2) De la piscina, elegir N candidatas lo más distintas posible entre sí (parecido
+  // ≤ 60% cuando sea posible; si la piscina es chica, se relaja el límite en vez de
+  // fallar, para nunca dejar al usuario sin sugerencias).
+  function seleccionarDiversas(pool, cantidad, cantidadNumeros){
+    const solapamiento = (a, b) => {
+      const setB = new Set(b);
+      return a.filter(n => setB.has(n)).length / cantidadNumeros;
+    };
+    const restantes = pool.slice();
+    for(let i=restantes.length-1;i>0;i--){ const k=Math.floor(Math.random()*(i+1)); [restantes[i],restantes[k]]=[restantes[k],restantes[i]]; }
+
+    const elegidas = [];
+    while(elegidas.length < cantidad && restantes.length > 0){
+      let idx = -1;
+      for(const umbral of [0.6, 0.7, 0.8, 1.0]){
+        idx = restantes.findIndex(cand => elegidas.every(e => solapamiento(cand.combo, e.combo) <= umbral));
+        if(idx !== -1) break;
+      }
+      if(idx === -1) idx = 0;
+      elegidas.push(restantes[idx]);
+      restantes.splice(idx, 1);
+    }
+    return elegidas;
+  }
+
+  // 3) Registro local (este dispositivo) de combinaciones ya entregadas hoy para
+  // cada juego, para evitar repetir exactamente lo mismo el mismo día. No hay
+  // backend/Redis en este prototipo, así que se guarda en localStorage.
+  const CLAVE_LOCALSTORAGE_SUGERENCIAS = 'lotoAnalytics_sugerenciasEntregadas_v1';
+  function cargarRegistroSugerenciasEntregadas(){
+    try{
+      const crudo = localStorage.getItem(CLAVE_LOCALSTORAGE_SUGERENCIAS);
+      return crudo ? JSON.parse(crudo) : {};
+    } catch(err){ return {}; }
+  }
+  function guardarRegistroSugerenciasEntregadas(reg){
+    try{ localStorage.setItem(CLAVE_LOCALSTORAGE_SUGERENCIAS, JSON.stringify(reg)); }
+    catch(err){ console.warn('No se pudo guardar el registro de sugerencias entregadas:', err); }
+  }
+  function obtenerCombosEntregadosHoy(clave){
+    return cargarRegistroSugerenciasEntregadas()[clave] || [];
+  }
+  function registrarComboEntregado(clave, comboStr){
+    const reg = cargarRegistroSugerenciasEntregadas();
+    if(!reg[clave]) reg[clave] = [];
+    if(!reg[clave].includes(comboStr)) reg[clave].push(comboStr);
+    if(reg[clave].length > 200) reg[clave] = reg[clave].slice(-200); // evita crecer sin límite
+    guardarRegistroSugerenciasEntregadas(reg);
+  }
+
+  /** Orquesta las 4 fases. Reutilizable para cualquier lotería: solo cambia `historial` y `config`. */
+  function generarPorFrecuenciaPostInercia(historial, config, cantidadSugerencias=3, identificadorJuego='', senalExtra=null){
+    if(!historial || historial.length === 0) return { error: 'Historial vacío.' };
+    const sorteoBase = historial[historial.length - 1];
+    const radiografia = analizarUltimoSorteo(sorteoBase, config, historial);
+    const sorteosEspejo = buscarSorteosEspejo(radiografia, historial, true, 3);
+    if(sorteosEspejo.length === 0) return { error: 'No se encontraron sorteos espejo con similitud estructural suficiente.' };
+
+    const historialReciente10 = historial.slice(-10);
+    const postInercia = obtenerEfectoPostInercia(sorteosEspejo, historial, historialReciente10);
+    // senalExtra: señal opcional adicional para elegir la semilla (hoy: el
+    // "número reacción" del Efecto Disparador para el Kino). Si no se pasa,
+    // el comportamiento es idéntico al de antes.
+    const parametrosBase = { historial, config, radiografia, sorteosEspejo, postInercia, senalExtra };
+
+    let sugerencias;
+    if(config.cantidadNumeros <= 3){
+      // Sorteos de 3 números o menos: SIN CAMBIOS respecto al comportamiento
+      // original. Ya varían por muestreo ponderado dentro de generarCombinacionOptimizada.
+      sugerencias = [];
+      let intentosGlobales = 0;
+      while(sugerencias.length < cantidadSugerencias && intentosGlobales < cantidadSugerencias*4){
+        const r = generarCombinacionOptimizada(parametrosBase);
+        if(r) sugerencias.push(r);
+        intentosGlobales++;
+      }
+    } else {
+      // Sorteos de 4 números en adelante: piscina de candidatas + selección diversa
+      // + registro local para no repetir exactamente lo mismo el mismo día.
+      const pool = generarPoolCandidatas(parametrosBase, Math.max(20, cantidadSugerencias*6));
+      if(pool.length === 0){
+        sugerencias = [];
+      } else {
+        const clave = identificadorJuego ? `${identificadorJuego}__${new Date().toISOString().slice(0,10)}` : null;
+        let poolDisponible = pool;
+        if(clave){
+          const yaEntregadas = obtenerCombosEntregadosHoy(clave);
+          const sinRepetir = pool.filter(c => !yaEntregadas.includes(c.combo.join(',')));
+          if(sinRepetir.length >= Math.min(cantidadSugerencias, pool.length)) poolDisponible = sinRepetir;
+        }
+        sugerencias = seleccionarDiversas(poolDisponible, cantidadSugerencias, config.cantidadNumeros);
+        if(clave) sugerencias.forEach(s => registrarComboEntregado(clave, s.combo.join(',')));
+      }
+    }
+
+    return { analisis: radiografia, espejos: sorteosEspejo, postInercia, sugerencias };
+  }
+
+  // --- Integración con la interfaz. Genérica: recibe el historial y las frecuencias
+  // reales del juego seleccionado (Kino o Quiniela Nacional, ver JUEGOS_REALES); si no
+  // se pasan explícitamente, usa kinoHistorial por compatibilidad con llamadas previas. ---
+  function generarPorPostInercia(l, j, cantJugada, historialReal, frecuenciasReal){
+    const historialUsado = historialReal || kinoHistorial;
+    const cont = document.getElementById('combos');
+    const config = { rango: j.rango, cantidadNumeros: cantJugada };
+    const identificadorJuego = `${l.nombre}__${j.nombre}`;
+
+    // Para el Kino, la Regla de Continuidad Secuencial Predictiva (Efecto
+    // Disparador) aporta una señal extra: qué números "reaccionan" con más
+    // frecuencia justo después de los bloques (parejas/tríos) más densos del
+    // último sorteo. Se suma como otra señal más al elegir la semilla del
+    // único motor automático (Post-Inercia) -- ya no hay un botón/selector
+    // aparte para esto, ambas señales trabajan juntas en un solo paso.
+    let senalDisparador = null;
+    if(j.nombre === "Súper Kino TV"){
+      const disparador = calcularEfectoDisparador();
+      if(disparador){
+        senalDisparador = {};
+        disparador.ranking.forEach(r => { if(r.pct > 0) senalDisparador[r.numero] = r.pct; });
+      }
+    }
+
+    const resultado = generarPorFrecuenciaPostInercia(historialUsado, config, 3, identificadorJuego, senalDisparador);
+
+    if(resultado.error){
+      cont.innerHTML = `<div class="hint">${resultado.error}</div>`;
+      return;
+    }
+
+    const { analisis, espejos, postInercia, sugerencias } = resultado;
+    const mejorPuntaje = espejos.length ? espejos[0].puntaje : 0;
+    const modoRespaldo = mejorPuntaje < 0.5 || !postInercia;
+
+    // El análisis completo (radiografía, sorteos espejo, efecto rebote, polaridad,
+    // números imán) se sigue calculando igual que antes -- solo que ya no se
+    // imprime en la interfaz como texto. El usuario solo debe ver las sugerencias.
+    let encabezado = `<strong>Frecuencia, Post-Inercia y Control de Temperatura</strong>`;
+    encabezado += `<br><span style="opacity:0.7;">Radiografía del último sorteo: paridad ${analisis.metricas.ratioParidad}, suma total ${analisis.metricas.sumaTotal} `;
+    encabezado += `(rango estándar esperado: ${analisis.sumaEstandar.min}-${analisis.sumaEstandar.max}), `;
+    encabezado += `décadas vacías: ${analisis.metricas.decenasVacias.length ? analisis.metricas.decenasVacias.join(', ') : 'ninguna'}.<br>`;
+
+    const espejosTexto = espejos.map(e => `${(e.puntaje*100).toFixed(0)}% (sorteo #${e.idx+1}, peso reciencia ${e.peso.toFixed(2)})`).join(' · ');
+    encabezado += `Sorteos espejo (parentesco, ponderado por reciencia): ${espejosTexto}.<br>`;
+
+    if(modoRespaldo){
+      encabezado += `<strong style="color:var(--rosa,#ec4899);">Umbral de Confianza activado</strong>: el último sorteo es atípico frente al historial (mejor parecido ${(mejorPuntaje*100).toFixed(0)}% &lt; 50%). No se fuerza ningún patrón — se usa el Modo de Respaldo Lógico (paridad equilibrada y suma dentro del rango estándar).</span>`;
+    } else {
+      const topImanes = postInercia.rankingImanes.slice(0,8).map(r => `${r.numero.toString().padStart(2,'0')} (${(r.pct*100).toFixed(0)}%${r.temperatura ? ', '+r.temperatura.estado : ''})`).join(', ');
+      if(postInercia.decadaRebote) encabezado += `Efecto rebote de década: la década ${postInercia.decadaRebote.decena} se reactivó en ${(postInercia.decadaRebote.pct*100).toFixed(0)}% de los casos.<br>`;
+      encabezado += `Polaridad dominante proyectada: ${postInercia.polaridad.dominante} (${(postInercia.polaridad.pct*100).toFixed(0)}%).<br>`;
+      encabezado += `Números imán (top, con temperatura de los últimos 10 sorteos): ${topImanes}.</span>`;
+    }
+    cont.innerHTML = ''; // se calcula 'encabezado' arriba (útil para depurar en consola si hace falta) pero no se pinta en la interfaz
+
+    if(sugerencias.length === 0){
+      cont.innerHTML += `<div class="hint">No se logró armar una combinación que cumpla las Reglas de Oro (Cero Copias, Consistencia Estructural) con este historial. Intenta de nuevo.</div>`;
+      return;
+    }
+
+    sugerencias.forEach((s, i) => {
+      const resaltar = s.semilla || [];
+      const div = document.createElement('div');
+      div.className = 'combo';
+      div.innerHTML = `
+        <div class="idx">${i+1}</div>
+        <div class="balls">
+          ${s.combo.map(n=>`<div class="ball ${resaltar.includes(n)?'anchor':''}">${n.toString().padStart(2,'0')}</div>`).join('')}
+        </div>
+      `;
+      cont.appendChild(div);
+    });
+  }
+
+  function pintarFrecuenciaJuego(orden){
+    const nombreJuego = juegoActual && loterias.find(x=>x.nombre===juegoActual.loteria).juegos[juegoActual.indice].nombre;
+    const real = nombreJuego ? datosRealesDe(nombreJuego) : null;
+    const fuente = real ? real.frecuencias() : frecuencias;
+    const [minR, maxR] = real ? real.rango : [0, 99];
+
+    const entradas = Object.entries(fuente)
+      .map(([k,v]) => [Number(k), v])
+      .filter(([num]) => num >= minR && num <= maxR)
+      .sort((a,b)=> orden==='desc' ? b[1]-a[1] : a[1]-b[1])
+      .slice(0,10);
+    const max = Math.max(...entradas.map(e=>e[1]));
+    const freqJuego = document.getElementById('freq-juego-lista');
+    freqJuego.innerHTML = (real ? `<div class="hint" style="margin-bottom:10px;">Calculado sobre ${real.historial().length} sorteos reales proporcionados.</div>` : '') + entradas.map(([num,veces],i)=>`
+      <div class="freq-row">
+        <div class="freq-rank">${i+1}</div>
+        <div class="freq-ball">${Number(num).toString().padStart(2,'0')}</div>
+        <div class="freq-bar-wrap"><div class="freq-bar" style="width:${(veces/max*100).toFixed(0)}%"></div></div>
+        <div class="freq-count">${veces} veces</div>
+      </div>
+    `).join('');
+  }
+
+  function ordenarFreqJuego(orden, btn){
+    btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    pintarFrecuenciaJuego(orden);
+  }
+
+  function volverALoteria(){
+    document.getElementById('juego-detail').classList.remove('show');
+    document.getElementById('lot-detail').classList.add('show');
+  }
+
+  /* ---------- SISTEMA DE ACTUALIZACIÓN AUTOMÁTICA ---------- */
+  // Estructura lista para conectarse a un backend/API/webhook real que publique los
+  // sorteos en cuanto salgan. Hoy el prototipo no tiene backend propio, así que
+  // ENDPOINT_SORTEOS queda en null: la función revisa, no encuentra endpoint, y no
+  // hace nada — sin romper nada. En cuanto haya una API real, solo hay que poner la
+  // URL aquí y esta función empieza a traer los sorteos del día automáticamente.
+  //
+  // Conectado directamente a la API REST automática de Supabase (PostgREST),
+  // leyendo la tabla "sorteos" que llena backend-todo-en-uno.js.
+  //
+  // SUPABASE_ANON_KEY es la llave "publicable" (segura para el navegador):
+  // solo permite lo que las políticas de Row Level Security de la tabla
+  // autoricen (en este caso, únicamente lectura). NUNCA poner aquí la llave
+  // "secreta"/"service_role" — esa da acceso total a la base de datos.
+  const SUPABASE_URL = "https://vrqzpuikwsopjpehusgp.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_TS32w4W9EW8Jp7YjqFAalw_oxldUa7i";
+  const ENDPOINT_SORTEOS = SUPABASE_URL + "/rest/v1/sorteos?select=loteria,juego,fecha,numeros&order=fecha.desc&limit=20";
+  const INTERVALO_ACTUALIZACION_MS = 60 * 1000; // revisa cada 60 segundos
+
+  // ---- CARGA DEL HISTORIAL COMPLETO DESDE SUPABASE ----
+  // Antes kinoHistorial y nacionalHistorial venían escritos a mano dentro del HTML.
+  // Ahora, al abrir la página, se descargan TODOS los sorteos guardados por el robot
+  // recolector en Supabase y se cargan en esas mismas variables (arriba quedaron
+  // declaradas como arreglos vacíos). El resto del código -motor de análisis,
+  // recomendaciones, estadísticas- no se tocó: sigue leyendo kinoHistorial y
+  // nacionalHistorial exactamente igual que antes, solo que ahora esas variables se
+  // llenan con datos reales de la base de datos en vez de estar escritas en el archivo.
+  const ENDPOINT_HISTORIAL_COMPLETO = SUPABASE_URL + "/rest/v1/sorteos?select=loteria,juego,fecha,numeros&order=fecha.asc&limit=5000";
+
+  // Normaliza texto antes de comparar "loteria"/"juego": quita espacios de sobra y
+  // unifica cómo se representan internamente los acentos (NFC), para que un mismo
+  // texto escrito por distintas herramientas (el robot, Supabase, este archivo) se
+  // reconozca como igual aunque por dentro los tildes estén codificados distinto.
+  function normalizarTexto(t){
+    return (t || "").normalize('NFC').trim();
+  }
+
+  // Diagnóstico visible del último intento de carga (para poder ver EN LA PÁGINA,
+  // sin herramientas de desarrollador, si la conexión a Supabase falló o si sí
+  // conectó pero no encontró ningún sorteo que coincida con el nombre esperado).
+  const estadoCargaSupabase = { intentado:false, ok:false, error:null, totalFilasRecibidas:0 };
+
+  async function cargarHistorialCompletoDesdeSupabase(){
+    estadoCargaSupabase.intentado = true;
+    try{
+      const resp = await fetch(ENDPOINT_HISTORIAL_COMPLETO, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: "Bearer " + SUPABASE_ANON_KEY
+        }
+      });
+      if(!resp.ok) throw new Error('HTTP ' + resp.status + ' - ' + (await resp.text()).slice(0,200));
+      const filas = await resp.json();
+      if(!Array.isArray(filas)) throw new Error('Respuesta inesperada (no es una lista): ' + JSON.stringify(filas).slice(0,200));
+
+      estadoCargaSupabase.totalFilasRecibidas = filas.length;
+
+      filas.forEach(s => {
+        if(!s.loteria || !s.juego || !s.fecha || !Array.isArray(s.numeros)) return;
+        const fechaFormateada = isoAFormatoDDMMYYYY(s.fecha);
+        const loteria = normalizarTexto(s.loteria);
+        const juego = normalizarTexto(s.juego);
+
+        if(loteria === "Leidsa" && juego === "Súper Kino TV"){
+          const idx = kinoHistorial.findIndex(x => x.fecha === fechaFormateada);
+          if(idx >= 0) kinoHistorial[idx] = { fecha: fechaFormateada, numeros: s.numeros };
+          else kinoHistorial.push({ fecha: fechaFormateada, numeros: s.numeros });
+        }
+
+        if(loteria === "Lotería Nacional" && juego === "Quiniela Nacional"){
+          const idx = nacionalHistorial.findIndex(x => x.fecha === fechaFormateada);
+          if(idx >= 0) nacionalHistorial[idx] = { fecha: fechaFormateada, numeros: s.numeros };
+          else nacionalHistorial.push({ fecha: fechaFormateada, numeros: s.numeros });
+        }
+      });
+
+      kinoHistorial.sort((a,b) => parsearFechaDDMMYYYY(a.fecha) - parsearFechaDDMMYYYY(b.fecha));
+      nacionalHistorial.sort((a,b) => parsearFechaDDMMYYYY(a.fecha) - parsearFechaDDMMYYYY(b.fecha));
+      estadoCargaSupabase.ok = true;
+      console.log('[Supabase] Filas recibidas:', filas.length, '· Kino:', kinoHistorial.length, '· Nacional:', nacionalHistorial.length);
+      return true;
+    } catch(err){
+      estadoCargaSupabase.ok = false;
+      estadoCargaSupabase.error = (err && err.message) ? err.message : String(err);
+      console.warn('No se pudo cargar el historial completo desde Supabase:', err);
+      return false;
+    }
+  }
+
+  async function consultarSorteosDelDia(){
+    try{
+      const resp = await fetch(ENDPOINT_SORTEOS, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: "Bearer " + SUPABASE_ANON_KEY
+        }
+      });
+      if(!resp.ok) throw new Error('HTTP ' + resp.status);
+      const nuevos = await resp.json();
+      aplicarNuevosSorteos(nuevos);
+    } catch(err){
+      console.warn('No se pudo actualizar sorteos automáticamente:', err);
+    }
+  }
+
+  // Inserta solo los sorteos que todavía no estén en el feed (evita duplicados si
+  // el backend reenvía el mismo sorteo en varias consultas), y refresca las vistas
+  // que dependan de esos datos (el feed principal y, si está abierta, la pantalla
+  // del juego que el usuario esté viendo en ese momento).
+  // Cada sorteo que traiga el backend/robot (fecha en formato ISO 'YYYY-MM-DD') se
+  // convierte al formato de fecha del feed, se guarda en localStorage (para que
+  // sobreviva a cerrar la página) y, si es del Kino, se integra al historial real
+  // que usa el motor de recomendaciones — automáticamente, sin intervención manual.
+  function aplicarNuevosSorteos(nuevos){
+    if(!Array.isArray(nuevos) || nuevos.length === 0) return;
+    let huboCambios = false;
+    nuevos.forEach(s => {
+      if(!s.loteria || !s.juego || !s.fecha || !Array.isArray(s.numeros)) return;
+
+      const fechaTexto = formatearFechaTexto(parsearFechaISO(s.fecha));
+      const yaExiste = resultadosRecientes.some(r => r.loteria === s.loteria && r.fecha === fechaTexto);
+      if(!yaExiste){
+        resultadosRecientes.unshift({ loteria: s.loteria, fecha: fechaTexto, numeros: s.numeros });
+        huboCambios = true;
+      }
+
+      const sorteoLocal = { loteria: s.loteria, juego: s.juego, fecha: s.fecha, numeros: s.numeros, hora_publicacion: new Date().toISOString() };
+      guardarSorteoLocal(sorteoLocal);
+      if(s.loteria === "Leidsa" && s.juego === "Súper Kino TV") integrarSorteoLocalEnKinoHistorial(sorteoLocal);
+      if(s.loteria === "Lotería Nacional" && s.juego === "Quiniela Nacional") integrarSorteoLocalEnNacionalHistorial(sorteoLocal);
+    });
+    if(!huboCambios) return;
+    pintarFeed();
+    if(juegoActual && document.getElementById('juego-detail').classList.contains('show')){
+      abrirJuego(juegoActual.loteria, juegoActual.indice);
+    }
+  }
+
+  /* ---------- INIT ---------- */
+  // Antes de armar la pantalla se descarga primero el historial completo de Supabase
+  // (kinoHistorial y nacionalHistorial), y recién con esos datos ya cargados se hace
+  // el resto de la inicialización -igual que siempre, sin cambios en esa parte-.
+  async function iniciarApp(){
+    await cargarHistorialCompletoDesdeSupabase(); // llena kinoHistorial y nacionalHistorial con lo que haya en la base de datos
+    integrarSorteosLocalesAlCargar();   // trae a cada historial real lo guardado en sesiones anteriores (localStorage)
+    recalcularEstadisticasKino();       // cálculo inicial de frecuencias/afinidad del Kino (incluye lo local ya integrado)
+    recalcularEstadisticasNacional();   // cálculo inicial de calientes/fríos de Quiniela Nacional (ídem)
+    pintarFeed();
+    poblarSelectoresFreq();
+    pintarListaLoterias();
+    poblarSelectoresRec();
+    consultarSorteosDelDia();
+    setInterval(consultarSorteosDelDia, INTERVALO_ACTUALIZACION_MS);
+  }
+  iniciarApp();
+</script>
+</body>
+</html>
