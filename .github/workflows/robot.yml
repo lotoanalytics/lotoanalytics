@@ -2,7 +2,8 @@ name: Robot recolector LotoAnalytics
 
 on:
   schedule:
-    - cron: '30 16,17,18,19,23,0,1,2 * * *'
+    - cron: '*/10 11-23,0-2 * * *'
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 jobs:
