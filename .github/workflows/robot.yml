@@ -53,9 +53,26 @@ jobs:
         with:
           node-version: '22'
 
+      # ---- CACHÉ: evita reinstalar/redescargar todo en cada corrida ----
+      # Sin esto, cada una de las ~288 corridas al día (cada 5 min) tenía que
+      # bajar Puppeteer + el navegador Chrome de nuevo desde cero — eso solo
+      # ya podía tardar 30-90 segundos por corrida, sin importar si al final
+      # resultaba vacía. Con caché, la PRIMERA corrida del día lo descarga
+      # normal y lo guarda; las siguientes corridas lo reutilizan directo,
+      # bajando ese paso a unos pocos segundos.
+      - name: Caché de node_modules y Chromium de Puppeteer
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/puppeteer
+          key: ${{ runner.os }}-node22-puppeteer-v1
+          restore-keys: |
+            ${{ runner.os }}-node22-puppeteer-
+
       - name: Instalar librerías necesarias
         run: |
-          npm init -y
+          if [ ! -f package.json ]; then npm init -y; fi
           npm install axios cheerio jsdom express dotenv node-cron @supabase/supabase-js ws puppeteer
 
       - name: Ejecutar backend-todo-en-uno
