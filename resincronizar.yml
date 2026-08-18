@@ -1,0 +1,51 @@
+name: Resincronizar Loteka
+
+on:
+  workflow_dispatch:
+    inputs:
+      aplicar:
+        description: '¿Aplicar las correcciones? (false = solo mostrar diferencias, true = corregir de verdad)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  resync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar archivos
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Caché de node_modules y Chromium de Puppeteer
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/puppeteer
+          key: ${{ runner.os }}-node22-puppeteer-v1
+          restore-keys: |
+            ${{ runner.os }}-node22-puppeteer-
+
+      - name: Instalar librerías necesarias
+        run: |
+          if [ ! -f package.json ]; then npm init -y; fi
+          npm install cheerio dotenv @supabase/supabase-js puppeteer
+
+      - name: Ejecutar resincronización
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ "${{ github.event.inputs.aplicar }}" = "true" ]; then
+            node resincronizar-loteka.js --aplicar
+          else
+            node resincronizar-loteka.js
+          fi
